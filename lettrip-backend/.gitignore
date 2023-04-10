@@ -141,4 +141,7 @@ gradle-app.setting
 # Java heap dump
 *.hprof
 
+### custom
+application.yml
+
 # End of https://www.toptal.com/developers/gitignore/api/java,gradle,intellij+all
