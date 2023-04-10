@@ -1,8 +1,9 @@
 package com.lettrip.lettripbackend.controller.auth;
 
+import com.lettrip.lettripbackend.controller.auth.dto.ApiResponse;
 import com.lettrip.lettripbackend.controller.auth.dto.SignUpUser;
-import com.lettrip.lettripbackend.controller.auth.dto.WithdrawUser;
 import com.lettrip.lettripbackend.service.AuthService;
+import com.lettrip.lettripbackend.service.MailService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 public class AuthController {
     private final AuthService authService;
+    private final MailService mailService;
 
     @PostMapping("/sign-up")
     public SignUpUser.Response signUp(
@@ -26,4 +28,16 @@ public class AuthController {
         // TODO: 고려할 사항이 많아서 일단 보류, social login까지 구현한 뒤 구현 필요
     }
 
+    @GetMapping("/email-code/{email}")
+    public ApiResponse sendEmailVerificationCode(@PathVariable String email) throws Exception {
+        authService.checkIfDuplicatedEmail(email);
+        mailService.sendVerificationEmail(email);
+        return new ApiResponse(true, "이메일 인증 코드가 메일로 전송되었습니다.");
+    }
+
+    @GetMapping("/email-verify/{code}")
+    public ApiResponse verifyEmailCode(@PathVariable String code) {
+        mailService.verifyEmailCode(code);
+        return new ApiResponse(true, "이메일 인증이 완료되었습니다.");
+    }
 }

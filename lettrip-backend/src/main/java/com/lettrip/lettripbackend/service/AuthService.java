@@ -1,7 +1,6 @@
 package com.lettrip.lettripbackend.service;
 
 import com.lettrip.lettripbackend.controller.auth.dto.SignUpUser;
-import com.lettrip.lettripbackend.controller.auth.dto.WithdrawUser;
 import com.lettrip.lettripbackend.domain.user.ProviderType;
 import com.lettrip.lettripbackend.domain.user.User;
 import com.lettrip.lettripbackend.exception.LettripErrorCode;
@@ -18,7 +17,7 @@ public class AuthService {
 
     @Transactional
     public SignUpUser.Response createUser(SignUpUser.Request request) {
-        validateCreateUserRequest(request);
+        checkIfDuplicatedEmail(request.getEmail());
         return SignUpUser.Response.fromEntity(createUserFromRequest(request));
     }
 
@@ -33,12 +32,12 @@ public class AuthService {
                 .build());
     }
 
-    private void validateCreateUserRequest(SignUpUser.Request request) {
-        userRepository.findByEmail(request.getEmail())
-                .ifPresent(user->{
+    public void checkIfDuplicatedEmail(String email) {
+        userRepository.findByEmail(email)
+                .ifPresent(user -> {
                     throw new LettripException(LettripErrorCode.DUPLICATED_EMAIL);
                 });
     }
-
-
 }
+
+
