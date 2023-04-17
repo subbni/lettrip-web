@@ -1,17 +1,17 @@
 package com.lettrip.lettripbackend.controller.auth;
 
 import com.lettrip.lettripbackend.controller.auth.dto.ApiResponse;
+import com.lettrip.lettripbackend.controller.auth.dto.LogInUser;
 import com.lettrip.lettripbackend.controller.auth.dto.SignUpUser;
 import com.lettrip.lettripbackend.service.AuthService;
 import com.lettrip.lettripbackend.service.MailService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/auth")
 public class AuthController {
     private final AuthService authService;
     private final MailService mailService;
@@ -21,6 +21,13 @@ public class AuthController {
             @Valid @RequestBody SignUpUser.Request request
     ) {
         return authService.createUser(request);
+    }
+
+    @PostMapping("/login")
+    public LogInUser.Response logIn(
+            @Valid @RequestBody LogInUser.Request request
+    ) {
+        return authService.logInUser(request);
     }
 
     @DeleteMapping("/withdraw")
