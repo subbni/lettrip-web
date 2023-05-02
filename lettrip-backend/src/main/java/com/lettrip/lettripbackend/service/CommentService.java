@@ -4,7 +4,6 @@ import com.lettrip.lettripbackend.controller.ApiResponse;
 import com.lettrip.lettripbackend.controller.comment.dto.CommentResponse;
 import com.lettrip.lettripbackend.controller.comment.dto.CreateComment;
 import com.lettrip.lettripbackend.controller.comment.dto.ModifyComment;
-import com.lettrip.lettripbackend.controller.comment.dto.ShowComments;
 import com.lettrip.lettripbackend.domain.community.Article;
 import com.lettrip.lettripbackend.domain.community.Comment;
 import com.lettrip.lettripbackend.domain.user.User;
