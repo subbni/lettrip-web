@@ -24,7 +24,7 @@ public class SignUpUser {
         @Size(min=2, max=20, message="name size must be 2 ~ 20")
         private String name;
         @NotNull
-        @Size(min=2, max=20, message="nickname size must be 2 ~ 20")
+        @Size(min=2, max=30, message="nickname size must be 2 ~ 20")
         private String nickname;
         @NotNull
         private String imageUrl;
