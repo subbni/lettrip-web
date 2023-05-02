@@ -33,7 +33,7 @@ public class CommentService {
         User user = userService.findUserById(userId);
         Article article = articleService.findArticleById(request.getArticle_id());
 
-        if(request.getParent_comment_id() != null && request.getMentioned_user_email()!=null) {
+        if(request.getParent_comment_id() == null && request.getMentioned_user_email()==null) {
             return saveComment(user,article,request);
         } else {
             return saveReply(user,article,request);
