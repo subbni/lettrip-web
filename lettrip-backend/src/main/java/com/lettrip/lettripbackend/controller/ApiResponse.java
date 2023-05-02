@@ -1,4 +1,4 @@
-package com.lettrip.lettripbackend.controller.auth.dto;
+package com.lettrip.lettripbackend.controller;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

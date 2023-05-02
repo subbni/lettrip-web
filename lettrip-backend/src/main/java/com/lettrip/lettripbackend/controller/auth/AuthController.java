@@ -1,6 +1,6 @@
 package com.lettrip.lettripbackend.controller.auth;
 
-import com.lettrip.lettripbackend.controller.auth.dto.ApiResponse;
+import com.lettrip.lettripbackend.controller.ApiResponse;
 import com.lettrip.lettripbackend.controller.auth.dto.LogInUser;
 import com.lettrip.lettripbackend.controller.auth.dto.SignUpUser;
 import com.lettrip.lettripbackend.service.AuthService;

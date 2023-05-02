@@ -24,16 +24,29 @@ public class Comment extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name="ARTICLE_ID")
     private Article article;
-
+    @Column(name="MENTIONED_USER_ID")
+    private Long mentioned_user_id;
     @NotNull
     @NotBlank
     private String content;
 
+    @Column(name="PARENT_COMMENT_ID")
+    private Long parent_comment_id;
+
     @Builder
-    public Comment(User user, Article article, String content) {
+    public Comment(
+            User user,
+            Article article,
+            String content,
+            Long parent_comment_id,
+            Long mentioned_user_id
+            ) {
         this.user = user;
         this.article = article;
         this.content = content;
+        this.parent_comment_id = parent_comment_id;
+        this.mentioned_user_id = mentioned_user_id;
+
     }
 
     public void update(String content) {

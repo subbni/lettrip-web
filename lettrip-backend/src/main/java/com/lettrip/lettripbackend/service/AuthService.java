@@ -77,7 +77,7 @@ public class AuthService {
     }
     private void comparePassword(User user, String requestedPassword) {
         if(!passwordEncoder.matches(requestedPassword,user.getPassword())) {
-            throw new LettripException(LettripErrorCode.WRONG_PASSWORD);
+            throw new LettripException(LettripErrorCode.PASSWORD_NOT_MATCH);
         }
     }
 
