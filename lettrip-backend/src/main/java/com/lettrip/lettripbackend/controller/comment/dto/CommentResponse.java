@@ -30,19 +30,4 @@ public class CommentResponse {
         this.createdDate = comment.getCreatedDate();
         this.content = comment.getContent();
     }
-
-
-    public static ShowComments.Response fromEntity(Comment comment) {
-        return ShowComments.Response.builder()
-                .id(comment.getId())
-                .user_id(comment.getUser().getId())
-                .parent_comment_id(comment.getParent_comment_id())
-                .mentioned_user_id(comment.getMentioned_user_id())
-                .nickname(comment.getUser().getNickname())
-                .createdDate(comment.getCreatedDate())
-                .content(comment.getContent())
-                .build();
-    }
-
 }
-
