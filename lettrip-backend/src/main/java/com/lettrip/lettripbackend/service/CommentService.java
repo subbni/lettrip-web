@@ -31,8 +31,37 @@ public class CommentService {
     public CreateComment.Response saveComment(CreateComment.Request request, Long userId) {
 
         User user = userService.findUserById(userId);
-        User mentionedUser = userService.findUserByEmail(request.getMentioned_user_email());
         Article article = articleService.findArticleById(request.getArticle_id());
+
+        if(request.getParent_comment_id() != null && request.getMentioned_user_email()!=null) {
+            return saveComment(user,article,request);
+        } else {
+            return saveReply(user,article,request);
+        }
+    }
+
+    private CreateComment.Response saveComment(
+            User user,
+            Article article,
+            CreateComment.Request request) {
+        return CreateComment.Response.fromEntity(
+                commentRepository.save(
+                        Comment.builder()
+                                .user(user)
+                                .article(article)
+                                .content(request.getContent())
+                                .parent_comment_id(null)
+                                .mentioned_user_id(null)
+                                .build()
+                )
+        );
+    }
+
+    private CreateComment.Response saveReply(
+            User user,
+            Article article,
+            CreateComment.Request request) {
+        User mentionedUser = userService.findUserByEmail(request.getMentioned_user_email());
         Comment parent = findCommentById(request.getParent_comment_id());
         return CreateComment.Response.fromEntity(
                 commentRepository.save(
@@ -46,6 +75,7 @@ public class CommentService {
                 )
         );
     }
+
 
     @Transactional
     public ModifyComment.Response modifyComment(ModifyComment.Request request, Long userId) {
