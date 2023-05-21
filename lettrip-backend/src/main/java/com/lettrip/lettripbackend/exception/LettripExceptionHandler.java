@@ -22,8 +22,9 @@ public class LettripExceptionHandler {
                 e.getLettripErrorCode(), request.getRequestURI(), e.getDetailMessage());
 
         return LettripErrorResponse.builder()
+                .success(false)
                 .errorCode(e.getLettripErrorCode())
-                .errorMessage(e.getDetailMessage())
+                .message(e.getDetailMessage())
                 .build();
     }
 
@@ -36,9 +37,9 @@ public class LettripExceptionHandler {
     ) {
         log.error("url: {}, message: {}",
                 request.getRequestURI(), e.getMessage());
-        return LettripErrorResponse.builder()
+        return LettripErrorResponse.builder().success(false)
                 .errorCode(LettripErrorCode.INVALID_REQUEST)
-                .errorMessage((LettripErrorCode.INVALID_REQUEST.getMessage()))
+                .message((LettripErrorCode.INVALID_REQUEST.getMessage()))
                 .build();
     }
 
@@ -48,9 +49,9 @@ public class LettripExceptionHandler {
     ) {
         log.error("url: {}, message: {}",
                 request.getRequestURI(), e.getMessage());
-        return LettripErrorResponse.builder()
+        return LettripErrorResponse.builder().success(false)
                 .errorCode(LettripErrorCode.INTERNAL_SERVER_ERROR)
-                .errorMessage((LettripErrorCode.INTERNAL_SERVER_ERROR.getMessage()))
+                .message((LettripErrorCode.INTERNAL_SERVER_ERROR.getMessage()))
                 .build();
     }
 
