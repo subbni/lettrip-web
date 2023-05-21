@@ -9,6 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class LettripErrorResponse {
+    private Boolean success;
     private LettripErrorCode errorCode;
-    private String errorMessage;
+    private String message;
 }
