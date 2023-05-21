@@ -7,6 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum LettripErrorCode {
     DUPLICATED_EMAIL("이미 해당 Email로 가입된 계정이 존재합니다."),
+    DUPLICATED_NICKNAME("이미 존재하는 닉네임입니다."),
     USER_NOT_FOUND("해당 Email로 가입된 계정이 존재하지 않습니다."),
     EMAIL_CODE_NOT_MATCH("이메일 인증 코드가 일치하지 않습니다."),
     PASSWORD_NOT_MATCH("비밀번호가 일치하지 않습니다."),

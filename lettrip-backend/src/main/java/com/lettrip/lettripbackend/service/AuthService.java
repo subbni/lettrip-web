@@ -32,6 +32,7 @@ public class AuthService {
     @Transactional
     public SignUpUser.Response createUser(SignUpUser.Request request) {
         checkIfDuplicatedEmail(request.getEmail());
+        checkIfDuplicatedNickname(request.getNickname());
         return SignUpUser.Response.fromEntity(createUserFromRequest(request));
     }
 
@@ -51,6 +52,13 @@ public class AuthService {
         userRepository.findByEmail(email)
                 .ifPresent(user -> {
                     throw new LettripException(LettripErrorCode.DUPLICATED_EMAIL);
+                });
+    }
+
+    public void checkIfDuplicatedNickname(String nickname) {
+        userRepository.findByNickname(nickname)
+                .ifPresent(user -> {
+                    throw new LettripException(LettripErrorCode.DUPLICATED_NICKNAME);
                 });
     }
 
