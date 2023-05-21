@@ -4,6 +4,7 @@ import com.lettrip.lettripbackend.controller.article.dto.CreateArticle;
 import com.lettrip.lettripbackend.controller.article.dto.ModifyArticle;
 import com.lettrip.lettripbackend.controller.article.dto.ShowArticle;
 import com.lettrip.lettripbackend.controller.ApiResponse;
+import com.lettrip.lettripbackend.controller.article.dto.ShowArticleList;
 import com.lettrip.lettripbackend.domain.community.Article;
 import com.lettrip.lettripbackend.domain.user.User;
 import com.lettrip.lettripbackend.exception.ResourceNotFoundException;
@@ -66,18 +67,18 @@ public class ArticleService {
     }
 
     // 게시글 전체 조회
-    public Page<ShowArticle.Response> getAllArticlePage(Pageable pageable) {
+    public Page<ShowArticleList.Response> showAllArticlePage(Pageable pageable) {
         Page<Article> page = articleRepository.findAll(pageable);
-        return new PageImpl<ShowArticle.Response>(
+        return new PageImpl<ShowArticleList.Response>(
                 ArticleToDto(page.getContent()),
                 pageable,
                 page.getTotalElements()
         );
     }
 
-    private List<ShowArticle.Response> ArticleToDto(List<Article> articleList) {
+    private List<ShowArticleList.Response> ArticleToDto(List<Article> articleList) {
         return articleList.stream()
-                .map(ShowArticle.Response::fromEntity)
+                .map(ShowArticleList.Response::fromEntity)
                 .collect(Collectors.toList());
     }
     private void checkIfWriter(Article article, Long userId) {

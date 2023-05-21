@@ -4,11 +4,14 @@ import com.lettrip.lettripbackend.controller.article.dto.CreateArticle;
 import com.lettrip.lettripbackend.controller.article.dto.ModifyArticle;
 import com.lettrip.lettripbackend.controller.article.dto.ShowArticle;
 import com.lettrip.lettripbackend.controller.ApiResponse;
+import com.lettrip.lettripbackend.controller.article.dto.ShowArticleList;
 import com.lettrip.lettripbackend.security.CurrentUser;
 import com.lettrip.lettripbackend.security.CustomUserDetails;
 import com.lettrip.lettripbackend.service.ArticleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -23,11 +26,6 @@ public class ArticleController {
             @Valid @RequestBody CreateArticle.Request request
     ) {
         return articleService.saveArticle(request);
-    }
-
-    @GetMapping("/{articleId}")
-    public ShowArticle.Response showArticle(@PathVariable("articleId") Long articleId) {
-        return articleService.showArticle(articleId);
     }
 
     @PutMapping("/modify")
@@ -50,5 +48,16 @@ public class ArticleController {
                 articleId, customUserDetails.getId()
         );
     }
+
+    @GetMapping("/{articleId}")
+    public ShowArticle.Response showArticle(@PathVariable("articleId") Long articleId) {
+        return articleService.showArticle(articleId);
+    }
+
+    @GetMapping
+    public Page<ShowArticleList.Response> showArticleListPage(Pageable pageable) {
+        return articleService.showAllArticlePage(pageable);
+    }
+
 
 }
