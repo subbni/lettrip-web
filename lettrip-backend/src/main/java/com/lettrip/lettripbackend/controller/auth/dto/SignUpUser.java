@@ -1,6 +1,7 @@
 package com.lettrip.lettripbackend.controller.auth.dto;
 
 import com.lettrip.lettripbackend.domain.user.User;
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -26,7 +27,8 @@ public class SignUpUser {
         @NotNull
         @Size(min=2, max=30, message="nickname size must be 2 ~ 20")
         private String nickname;
-        @NotNull
+
+        @Nullable
         private String imageUrl;
     }
 

@@ -20,7 +20,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
             AuthenticationException authException
     ) throws IOException {
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-        log.error("401 error occurred.");
+        log.error("401 error occurred : "+request.getRequestURL() + " (+) "+request.getQueryString());
         log.error(authException.getMessage());
     }
 }

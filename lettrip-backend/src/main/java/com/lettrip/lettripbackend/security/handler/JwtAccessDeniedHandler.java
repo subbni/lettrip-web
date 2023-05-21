@@ -22,6 +22,6 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
     ) throws IOException, ServletException {
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         response.sendError(HttpServletResponse.SC_FORBIDDEN,"Access Denied");
-        log.error("403 error occurred.");
+        log.error("403 error occurred : "+request.getRequestURL() + " (+) "+request.getQueryString());
     }
 }

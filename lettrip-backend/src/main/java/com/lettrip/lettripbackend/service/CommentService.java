@@ -34,13 +34,13 @@ public class CommentService {
         Article article = articleService.findArticleById(request.getArticle_id());
 
         if(request.getParent_comment_id() == null && request.getMentioned_user_email()==null) {
-            return saveComment(user,article,request);
+            return saveParentComment(user,article,request);
         } else {
-            return saveReply(user,article,request);
+            return saveReplyComment(user,article,request);
         }
     }
 
-    private CreateComment.Response saveComment(
+    private CreateComment.Response saveParentComment(
             User user,
             Article article,
             CreateComment.Request request) {
@@ -57,7 +57,7 @@ public class CommentService {
         );
     }
 
-    private CreateComment.Response saveReply(
+    private CreateComment.Response saveReplyComment(
             User user,
             Article article,
             CreateComment.Request request) {
