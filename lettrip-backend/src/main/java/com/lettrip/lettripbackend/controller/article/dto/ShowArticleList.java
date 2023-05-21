@@ -13,16 +13,16 @@ public class ShowArticleList {
     @Builder
     public static class Response {
         Long id;
-        String writerName;
+        String writerNickname;
         String title;
         int hit;
         int likedCount;
         private LocalDateTime createdDate;
 
-        public static ShowArticle.Response fromEntity(Article article) {
-            return ShowArticle.Response.builder()
+        public static ShowArticleList.Response fromEntity(Article article) {
+            return Response.builder()
                     .id(article.getId())
-                    .writerName(article.getUser().getName())
+                    .writerNickname(article.getUser().getNickname())
                     .title(article.getTitle())
                     .hit(article.getHit())
                     .likedCount(article.getLikeCount())
