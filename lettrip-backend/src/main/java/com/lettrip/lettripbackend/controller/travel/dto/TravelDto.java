@@ -1,15 +1,10 @@
 package com.lettrip.lettripbackend.controller.travel.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.lettrip.lettripbackend.constant.Province;
-import com.lettrip.lettripbackend.constant.TravelTheme;
 import com.lettrip.lettripbackend.domain.travel.Travel;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -87,6 +82,4 @@ public class TravelDto {
                     .collect(Collectors.toList());
         }
     }
-
-
 }
