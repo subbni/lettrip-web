@@ -35,8 +35,8 @@ public class LettripExceptionHandler {
     public LettripErrorResponse handleBadRequest(
             Exception e, HttpServletRequest request
     ) {
-        log.error("url: {}, message: {}",
-                request.getRequestURI(), e.getMessage());
+        log.error("url: {}, message: {}, cause: {}",
+                request.getRequestURI(), e.getMessage(), e.getCause());
         return LettripErrorResponse.builder().success(false)
                 .errorCode(LettripErrorCode.INVALID_REQUEST)
                 .message((LettripErrorCode.INVALID_REQUEST.getMessage()))
@@ -47,8 +47,8 @@ public class LettripExceptionHandler {
     public LettripErrorResponse handleException(
             Exception e, HttpServletRequest request /* 그 외 모든 Exception 처리 */
     ) {
-        log.error("url: {}, message: {}",
-                request.getRequestURI(), e.getMessage());
+        log.error("url: {}, message: {}, cause: {}",
+                request.getRequestURI(), e.getMessage(), e.getCause());
         return LettripErrorResponse.builder().success(false)
                 .errorCode(LettripErrorCode.INTERNAL_SERVER_ERROR)
                 .message((LettripErrorCode.INTERNAL_SERVER_ERROR.getMessage()))

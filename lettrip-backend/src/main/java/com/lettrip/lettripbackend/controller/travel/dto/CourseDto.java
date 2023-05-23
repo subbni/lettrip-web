@@ -2,6 +2,7 @@ package com.lettrip.lettripbackend.controller.travel.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.lettrip.lettripbackend.domain.travel.Course;
+import jakarta.annotation.Nullable;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -43,6 +44,8 @@ public class CourseDto {
         private int dayCount;
 
         private PlaceDto.Response place;
+
+        @Nullable
         private ReviewDto.Response review;
 
         public Response(Course course) {
