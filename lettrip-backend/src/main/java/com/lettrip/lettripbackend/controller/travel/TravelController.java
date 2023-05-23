@@ -29,13 +29,21 @@ import java.util.List;
 @RequestMapping("/api/travel")
 public class TravelController {
     private final TravelService travelService;
-    @PostMapping("/create")
+    @PostMapping("/review/create")
     public ApiResponse createTravel(
             @CurrentUser CustomUserDetails customUserDetails,
             @Valid @RequestPart(value="travel") TravelDto.Request travelDto,
             @RequestPart(value="files", required = false) List<MultipartFile> multipartFiles
             ) {
         FileService.multipartFiles = multipartFiles;
+        return  travelService.saveTravel(customUserDetails.getId(),travelDto);
+    }
+
+    @PostMapping("/plan/create")
+    public ApiResponse createTravelPlan(
+            @CurrentUser CustomUserDetails customUserDetails,
+            @Valid @RequestBody  TravelDto.Request travelDto
+    ) {
         return  travelService.saveTravel(customUserDetails.getId(),travelDto);
     }
 

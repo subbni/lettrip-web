@@ -28,7 +28,7 @@ public class CourseService {
     @Transactional
     public void saveCourse(Travel travel, CourseDto.Request courseDto) {
         Place place = placeService.savePlace(courseDto.getPlace());
-        Review review = reviewService.saveReview(travel.getUser(),place,courseDto.getReview());
+        Review review = courseDto.getReview() ==null? null :reviewService.saveReview(travel.getUser(),place,courseDto.getReview());
         courseRepository.save(
                 Course.builder()
                         .travel(travel)
