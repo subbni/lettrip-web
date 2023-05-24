@@ -1,6 +1,5 @@
 package com.lettrip.lettripbackend.constant;
 
-import com.lettrip.lettripbackend.domain.user.ProviderType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
