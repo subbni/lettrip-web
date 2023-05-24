@@ -51,6 +51,7 @@ public class Travel extends BaseTimeEntity {
     @Convert(converter = TravelThemeConverter.class)
     private TravelTheme travelTheme;
 
+    private String mainImageUrl;
     @OneToMany(
             mappedBy = "travel",
             cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
@@ -88,5 +89,9 @@ public class Travel extends BaseTimeEntity {
         if (course.getTravel() != this) {
             course.setTravel(this);
         }
+    }
+
+    public void setMainImage(String mainImageUrl) {
+        this.mainImageUrl = mainImageUrl;
     }
 }
