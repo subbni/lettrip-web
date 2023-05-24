@@ -35,8 +35,11 @@ public class PlaceService {
                     Place.builder()
                             .name(placeDto.getName())
                             .locationPoint(getFormatLocationPoint(String.valueOf(placeDto.getXpoint()),String.valueOf(placeDto.getYpoint())))
-                            .categoryCode(PlaceCategory.getMatchedPlaceCategory(placeDto.getCategoryCode()))
-                            .categoryName(PlaceCategory.getMatchedPlaceCategory(placeDto.getCategoryCode())
+                            .categoryCode(placeDto.getCategoryCode().length()<1?null :
+                                    PlaceCategory.getMatchedPlaceCategory(placeDto.getCategoryCode()))
+                            .categoryName(
+                                    placeDto.getCategoryName().length()<1? null :
+                                    PlaceCategory.getMatchedPlaceCategory(placeDto.getCategoryCode())
                                     .getDescription()
                             )
                             .province(Province.of(placeDto.getProvince()))
