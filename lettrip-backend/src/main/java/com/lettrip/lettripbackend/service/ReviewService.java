@@ -41,6 +41,12 @@ public class ReviewService {
     }
 
     @Transactional
+    public void deleteReview(Review review) {
+        // 해당 place 총평점 업데이트
+    }
+
+
+    @Transactional
     public void checkAndUpdateSoloFriendlyTotalRating(Place place, int newRating) {
         if(soloFriendlyRatingCategories.contains(place.getCategoryCode())) {
             place.updateSoloFriendlyTotalRating(newRating);
@@ -49,4 +55,5 @@ public class ReviewService {
     private int getVisitTimes(User user, Place place) {
         return reviewRepository.findByUserAndPlace(user,place).size();
     }
+
 }
