@@ -43,7 +43,7 @@ public class TravelService {
                         .city(Province.getCityInProvince(
                                 Province.of(travelDto.getProvince()), travelDto.getCity()
                         ))
-                        .isVisited(travelDto.isVisited())
+                        .isVisited(travelDto.getIsVisited())
                         .departDate(travelDto.getDepartDate())
                         .lastDate(travelDto.getLastDate())
                         .totalCost(travelDto.getTotalCost())

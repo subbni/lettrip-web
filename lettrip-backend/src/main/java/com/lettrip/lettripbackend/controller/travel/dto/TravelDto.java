@@ -19,7 +19,7 @@ public class TravelDto {
     public static class Request {
         private String title;
         private String travelTheme;
-        private boolean isVisited;
+        private Boolean isVisited;
         private String province;
         private String city;
 
