@@ -40,10 +40,13 @@ function App() {
           <Route path="/travel/course/:travel-id" element={<CoursePage />} />
           <Route
             path="/travel/course/create"
-            element={<CoursePlanTemplate />}
+            element={<TravelPlanTemplate />}
           />
           <Route path="/travel/course/modify" element={<CourseModify />} />
-          <Route path="/travel/review/create" element={<ReviewCreate />} />
+          <Route
+            path="/travel/review/create"
+            element={<TravelReviewTemplate />}
+          />
           <Route path="/travel/review/modify" element={<ReviewModify />} />
 
           <Route path="/article" element={<ArticleList />} />
@@ -53,7 +56,8 @@ function App() {
             element={<ArticleModify />}
           />
           <Route path="/article/:article-id" element={<ArticlePage />} />
-          <Route path="travel/plan" element={<CoursePlanTemplate />} />
+          <Route path="travel/plan" element={<TravelPlanTemplate />} />
+          <Route path="travel/review" element={<TravelReviewTemplate />} />
         </Routes>
       </div>
     </Router>
