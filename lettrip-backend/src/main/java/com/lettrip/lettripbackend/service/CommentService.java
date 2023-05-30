@@ -9,10 +9,12 @@ import com.lettrip.lettripbackend.domain.community.Comment;
 import com.lettrip.lettripbackend.domain.user.User;
 import com.lettrip.lettripbackend.exception.ResourceNotFoundException;
 import com.lettrip.lettripbackend.repository.CommentRepository;
+import com.lettrip.lettripbackend.repository.specification.CommentSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -92,6 +94,20 @@ public class CommentService {
                 pageable, page.getTotalElements());
     }
 
+    public Page<CommentResponse> showParentCommentPage(Long articleId, Pageable pageable) {
+        Article article = articleService.findArticleById(articleId);
+        Page<Comment> page = commentRepository.findAll(getParentCommentPageSpec(article),pageable);
+        return new PageImpl<CommentResponse>(commentToDto(page.getContent()),
+                pageable, page.getTotalElements());
+    }
+
+    public Page<CommentResponse> showReplyCommentPage(Long articleId, Long parentCommentId, Pageable pageable) {
+        Article article = articleService.findArticleById(articleId);
+        Page<Comment> page = commentRepository.findAll(getReplyCommentPageSpec(article, parentCommentId),pageable);
+        return new PageImpl<CommentResponse>(commentToDto(page.getContent()),
+                pageable, page.getTotalElements());
+    }
+
     public ApiResponse deleteComment(Long commentId, Long userId) {
         // 1. 본인 작성 댓글인지 확인
         Comment comment = findCommentById(commentId);
@@ -107,6 +123,15 @@ public class CommentService {
                 });
     }
 
+    private Specification<Comment> getParentCommentPageSpec(Article article) {
+        return Specification.where(CommentSpecification.equalArticle(article))
+                .and(CommentSpecification.noParentCommentId());
+    }
+
+    private Specification<Comment> getReplyCommentPageSpec(Article article, Long parentCommentId) {
+        return Specification.where(CommentSpecification.equalArticle(article))
+                .and(CommentSpecification.equalParentCommentId(parentCommentId));
+    }
     private void checkIfWriter(Comment comment, Long userId) {
         if(comment.getUser().getId()!=userId) {
             throw new SecurityException("작성자만 가능한 작업입니다."); // TODO: Exception 따로 만들기

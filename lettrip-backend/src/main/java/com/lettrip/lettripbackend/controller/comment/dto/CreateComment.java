@@ -19,8 +19,6 @@ public class CreateComment {
         @NotBlank
         private String content;
         private Long parent_comment_id;
-        @NotNull
-        @NotBlank
         private String mentioned_user_email;
         // TODO : email로 요청? 닉네임으로 요청?
     }

@@ -41,12 +41,29 @@ public class CommentController {
         return commentService.modifyComment(request, customUserDetails.getId());
     }
 
-    @GetMapping("/{article-id}")
+    @GetMapping("/{article-id}/all")
     public Page<CommentResponse> showCommentList(
             @PathVariable("article-id") Long articleId,
             Pageable pageable
     ) {
         return commentService.showCommentsPage(articleId,pageable);
+    }
+
+    @GetMapping("/{article-id}")
+    public Page<CommentResponse> showParentCommentPage(
+            @PathVariable("article-id") Long articleId,
+            Pageable pageable
+    ) {
+        return commentService.showParentCommentPage(articleId,pageable);
+    }
+
+    @GetMapping("/{article-id}/{parent-comment-id}")
+    public Page<CommentResponse> showReplyCommentPage(
+            @PathVariable("article-id") Long articleId,
+            @PathVariable("parent-comment-id") Long parentCommentId,
+            Pageable pageable
+    ) {
+        return commentService.showReplyCommentPage(articleId,parentCommentId,pageable);
     }
 
     @DeleteMapping("/delete/{commentId}")
