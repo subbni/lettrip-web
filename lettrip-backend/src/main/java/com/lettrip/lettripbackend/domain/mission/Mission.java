@@ -1,6 +1,7 @@
 package com.lettrip.lettripbackend.domain.mission;
 
 import com.lettrip.lettripbackend.constant.MissionType;
+import com.lettrip.lettripbackend.domain.travel.Place;
 import com.lettrip.lettripbackend.domain.user.User;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -23,14 +24,19 @@ public class Mission {
     @JoinColumn(name="USER_ID")
     private User user;
 
+    @ManyToOne
+    @JoinColumn(name="PLACE_ID")
+    private Place place;
+
     @Enumerated(value=EnumType.STRING)
     private MissionType missionType;
 
     private LocalDate accomplishedDate;
 
     @Builder
-    public Mission(User user, MissionType missionType, LocalDate accomplishedDate) {
+    public Mission(User user, Place place,MissionType missionType, LocalDate accomplishedDate) {
         this.user = user;
+        this.place = place;
         this.missionType = missionType;
         this.accomplishedDate = accomplishedDate;
     }
