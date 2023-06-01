@@ -52,8 +52,8 @@ public class CommentService {
                                 .user(user)
                                 .article(article)
                                 .content(request.getContent())
-                                .parent_comment_id(null)
-                                .mentioned_user_id(null)
+                                .parent_comment_id(-1L)
+                                .mentioned_user_id(-1L)
                                 .build()
                 )
         );

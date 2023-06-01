@@ -28,8 +28,6 @@ public class TravelService {
     private final UserService userService;
     private final CourseService courseService;
 
-    private final FileService fileService;
-
     @Transactional
     public ApiResponse saveTravel(Long userId, TravelDto.Request travelDto) {
         User user = userService.findUserById(userId);
@@ -96,27 +94,33 @@ public class TravelService {
     }
 
     private Specification<Travel> getArticlePageSpec(ShowTravelList.Request request) {
+
         Specification<Travel> spec
-                = Specification.where(TravelSpecification.equalProvince((Province.valueOf(request.getProvince()))))
+                = Specification.where(TravelSpecification.equalIsVisited(true))
+                .and(TravelSpecification.equalProvince((Province.of(request.getProvince()))))
                 .and(TravelSpecification.equalCity(request.getCity()));
 
-        if(request.getTravelTheme()!=null) {
-            spec = spec.and(TravelSpecification.equalTravelTheme(TravelTheme.valueOf(request.getTravelTheme())));
+        if(!request.getTravelTheme().equals("all")) {
+            spec = spec.and(TravelSpecification.equalTravelTheme(TravelTheme.of(request.getTravelTheme())));
         }
 
-        if(request.getMinCost()!=null || request.getMaxCost()!=null) {
-            if(request.getMinCost() == null) {
+        if(request.getMinCost()>0 || request.getMaxCost()>0) {
+            if(request.getMinCost() <0) {
                 spec = spec.and(TravelSpecification.betweenTotalCost(0,request.getMaxCost()));
-            } else if(request.getMaxCost() == null) {
+            } else if(request.getMaxCost() <0) {
                 spec = spec.and(TravelSpecification.betweenTotalCost(request.getMinCost(),Long.MAX_VALUE));
+            } else {
+                spec = spec.and(TravelSpecification.betweenTotalCost(request.getMinCost(), request.getMaxCost()));
             }
         }
 
-        if(request.getMinNumberOfCourses()!=null || request.getMaxNumberOfCourses()!=null) {
-            if(request.getMinNumberOfCourses() == null) {
-                spec = spec.and(TravelSpecification.betweenTotalCost(0,request.getMaxNumberOfCourses()));
-            } else if(request.getMaxNumberOfCourses() == null) {
-                spec = spec.and(TravelSpecification.betweenTotalCost(request.getMinNumberOfCourses(),Integer.MAX_VALUE));
+        if(request.getMinNumberOfCourses()>0|| request.getMaxNumberOfCourses()>0) {
+            if(request.getMinNumberOfCourses() <0) {
+                spec = spec.and(TravelSpecification.betweenNumberOfCourses(0,request.getMaxNumberOfCourses()));
+            } else if(request.getMaxNumberOfCourses() <0) {
+                spec = spec.and(TravelSpecification.betweenNumberOfCourses(request.getMinNumberOfCourses(),Integer.MAX_VALUE));
+            } else {
+                spec = spec.and(TravelSpecification.betweenNumberOfCourses(request.getMinNumberOfCourses(), request.getMaxNumberOfCourses()));
             }
         }
         return spec;

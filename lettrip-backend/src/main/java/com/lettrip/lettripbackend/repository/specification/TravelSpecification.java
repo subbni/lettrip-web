@@ -12,6 +12,15 @@ import org.springframework.data.jpa.domain.Specification;
 public class TravelSpecification {
 
     // equal
+    public static Specification<Travel> equalIsVisited(boolean isVisited) {
+        return new Specification<Travel>() {
+            @Override
+            public Predicate toPredicate(Root<Travel> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                return criteriaBuilder.equal(root.get("isVisited"),isVisited);
+            }
+        };
+    }
+
     public static Specification<Travel> equalProvince(Province province) {
         return new Specification<Travel>() {
             @Override
