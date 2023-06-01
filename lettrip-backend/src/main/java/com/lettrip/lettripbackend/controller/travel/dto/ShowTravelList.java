@@ -36,6 +36,7 @@ public class ShowTravelList {
     @NoArgsConstructor
     @Builder
     public static class Response {
+        long id;
         String writerNickname;
         String writerEmail;
         String title;
@@ -56,18 +57,22 @@ public class ShowTravelList {
         long totalCost;
         int numberOfCourses;
 
+        String mainImageUrl;
+
         public static ShowTravelList.Response fromEntity(Travel travel) {
             return Response.builder()
+                    .id(travel.getId())
                     .writerEmail(travel.getUser().getEmail())
                     .writerNickname(travel.getUser().getNickname())
                     .title(travel.getTitle())
-                    .travelTheme(travel.getTravelTheme().toString())
-                    .province(travel.getProvince().toString())
+                    .travelTheme(travel.getTravelTheme().getKoreanName())
+                    .province(travel.getProvince().getKoreanName())
                     .city(travel.getCity())
                     .isVisited(travel.isVisited())
                     .departDate(travel.getDepartDate())
                     .lastDate(travel.getLastDate())
                     .numberOfCourses(travel.getNumberOfCourses())
+                    .totalCost(travel.getTotalCost())
                     .build();
         }
     }
