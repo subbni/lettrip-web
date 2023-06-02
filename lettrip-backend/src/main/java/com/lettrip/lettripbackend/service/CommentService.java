@@ -113,6 +113,7 @@ public class CommentService {
         Comment comment = findCommentById(commentId);
         checkIfWriter(comment,userId);
         // 2. 삭제
+        commentRepository.delete(comment);
         return new ApiResponse(true,"댓글이 삭제되었습니다.");
     }
 
