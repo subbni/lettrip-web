@@ -39,6 +39,8 @@ public class User {
     @Enumerated(EnumType.STRING)
     private ProviderType providerType;
 
+    private int point;
+
     @Builder
     public User(String email, String password, String name,
                 String nickname, String imageUrl, ProviderType providerType, Role role) {
@@ -49,6 +51,7 @@ public class User {
         this.imageUrl = imageUrl;
         this.providerType = providerType;
         this.role = role;
+        this.point = 0;
     }
 
     public void update(String name, String nickname, String imageUrl) {
@@ -71,6 +74,10 @@ public class User {
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public void addPoint(int point) {
+        this.point += point;
     }
 
 }
