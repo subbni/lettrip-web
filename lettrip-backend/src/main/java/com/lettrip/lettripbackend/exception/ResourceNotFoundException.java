@@ -22,4 +22,10 @@ public class ResourceNotFoundException extends RuntimeException{
         this.fieldValue=fieldValue;
     }
 
+    public ResourceNotFoundException(
+            String resourceName
+    ) {
+        super(String.format("요청에 맞는 %s가 존재하지 않습니다.",resourceName));
+    }
+
 }

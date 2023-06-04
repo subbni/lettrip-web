@@ -43,6 +43,20 @@ public class LettripExceptionHandler {
                 .build();
     }
 
+    @ExceptionHandler(value = {
+           ResourceNotFoundException.class,
+    })
+    public LettripErrorResponse handleResourceNotFound(
+            Exception e, HttpServletRequest request
+    ) {
+        log.error("url: {}, message: {}, path: {}",
+                request.getRequestURI(), e.getMessage(), e.getStackTrace());
+        return LettripErrorResponse.builder().success(false)
+                .errorCode(LettripErrorCode.RESOURCE_NOT_FOUND)
+                .message(e.getMessage())
+                .build();
+    }
+
     @ExceptionHandler(Exception.class)
     public LettripErrorResponse handleException(
             Exception e, HttpServletRequest request /* 그 외 모든 Exception 처리 */
