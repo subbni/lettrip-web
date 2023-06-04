@@ -13,7 +13,8 @@ public enum LettripErrorCode {
     PASSWORD_NOT_MATCH("비밀번호가 일치하지 않습니다."),
     INTERNAL_SERVER_ERROR("서버에 오류가 발생했습니다."),
     INVALID_REQUEST("잘못된 요청입니다."),
-    INVALID_CITY_NAME("행정구역 내에 존재하지 않는 지역명입니다.");
+    INVALID_CITY_NAME("행정구역 내에 존재하지 않는 지역명입니다."),
+    RESOURCE_NOT_FOUND("존재하지 않는 자원에 대한 요청입니다.");
 
     private final String message;
 }

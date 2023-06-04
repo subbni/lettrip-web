@@ -71,7 +71,7 @@ public class TravelController {
     }
 
     @GetMapping
-    public Page<ShowTravelList.Response> showTravelListPage(
+    public Page<ShowTravelList.Response> showTravelPage(
         @RequestParam("province") String province,
         @RequestParam("city") String city,
         @RequestParam(value = "minCost", required = false) long minCost,
@@ -94,4 +94,22 @@ public class TravelController {
                 pageable
         );
     }
+
+    @GetMapping("/my")
+    public Page<ShowTravelList.Response> showUserTravelPage(
+            @CurrentUser CustomUserDetails customUserDetails,
+            @RequestParam("isVisited") Boolean isVisited,
+            Pageable pageable
+    ) {
+        return travelService.getUserTravelPlanPage(customUserDetails.getId(), isVisited, pageable);
+    }
+
+    @GetMapping("/my/liked")
+    public Page<ShowTravelList.Response> showUserLikedTravelPage(
+            @CurrentUser CustomUserDetails customUserDetails,
+            Pageable pageable
+    ) {
+        return travelService.getLikedTravels(customUserDetails.getId(),pageable);
+    }
+
 }

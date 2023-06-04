@@ -5,6 +5,8 @@ import com.lettrip.lettripbackend.constant.TravelTheme;
 import com.lettrip.lettripbackend.controller.ApiResponse;
 import com.lettrip.lettripbackend.controller.travel.dto.ShowTravelList;
 import com.lettrip.lettripbackend.controller.travel.dto.TravelDto;
+import com.lettrip.lettripbackend.domain.liked.Liked;
+import com.lettrip.lettripbackend.constant.LikedType;
 import com.lettrip.lettripbackend.domain.travel.Travel;
 import com.lettrip.lettripbackend.domain.user.User;
 import com.lettrip.lettripbackend.exception.ResourceNotFoundException;
@@ -27,6 +29,8 @@ public class TravelService {
     private final TravelRepository travelRepository;
     private final UserService userService;
     private final CourseService courseService;
+
+    private final LikedService likedService;
 
     @Transactional
     public ApiResponse saveTravel(Long userId, TravelDto.Request travelDto) {
@@ -60,7 +64,6 @@ public class TravelService {
     public ApiResponse deleteTravel(Long travelId, Long userId) {
         Travel travel = findTravelById(travelId);
         checkIfWriter(travel,userId);
-        // 리뷰 삭제 로직 들어가야 함
         travelRepository.delete(travel);
         return new ApiResponse(true,"여행 코스가 삭제되었습니다.");
     }
@@ -83,9 +86,8 @@ public class TravelService {
     }
 
     // 여행 전체 조회
-
     public Page<ShowTravelList.Response> showArticlePage(ShowTravelList.Request request, Pageable pageable) {
-        Page<Travel> page = travelRepository.findAll(getArticlePageSpec(request),pageable);
+        Page<Travel> page = travelRepository.findAll(getTravelPageSpec(request),pageable);
         return new PageImpl<ShowTravelList.Response>(
                 travelToListDto(page.getContent()),
                 pageable,
@@ -93,7 +95,35 @@ public class TravelService {
         );
     }
 
-    private Specification<Travel> getArticlePageSpec(ShowTravelList.Request request) {
+    // 좋아요 누른 여행 조회
+    public Page<ShowTravelList.Response> getLikedTravels(Long userId, Pageable pageable) {
+        User user = userService.findUserById(userId);
+        List<Liked> likedList = likedService.findUserLikedList(user, LikedType.TRAVEL_LIKE);
+        List<Travel> travelList = likedList.stream()
+                .map((liked)-> {
+                    return travelRepository.findById(liked.getTargetId()).
+                            orElse(null);
+                })
+                .toList();
+        return new PageImpl<ShowTravelList.Response>(
+                travelToListDto(travelList),
+                pageable,
+                travelList.size()
+        );
+    }
+
+    // 사용자 작성 여행 조회
+    public Page<ShowTravelList.Response> getUserTravelPlanPage(Long userId, Boolean isVisited, Pageable pageable) {
+        User user = userService.findUserById(userId);
+        Page<Travel> page =  travelRepository.findAll(TravelSpecification.getTravelEqualUserAndIsVisited(user,isVisited),pageable);
+        return new PageImpl<>(
+                travelToListDto(page.getContent()),
+                pageable,
+                page.getTotalElements()
+        );
+    }
+
+    private Specification<Travel> getTravelPageSpec(ShowTravelList.Request request) {
 
         Specification<Travel> spec
                 = Specification.where(TravelSpecification.equalIsVisited(true))
@@ -125,6 +155,8 @@ public class TravelService {
         }
         return spec;
     }
+
+
 
     private List<ShowTravelList.Response> travelToListDto(List<Travel> travelList) {
         return travelList.stream()

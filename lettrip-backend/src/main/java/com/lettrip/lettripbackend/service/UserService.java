@@ -1,5 +1,6 @@
 package com.lettrip.lettripbackend.service;
 
+import com.lettrip.lettripbackend.controller.user.dto.UserDto;
 import com.lettrip.lettripbackend.domain.user.User;
 import com.lettrip.lettripbackend.exception.LettripErrorCode;
 import com.lettrip.lettripbackend.exception.LettripException;
@@ -25,5 +26,9 @@ public class UserService {
                 .orElseThrow(()-> {
                     throw new LettripException(LettripErrorCode.USER_NOT_FOUND);
                 });
+    }
+
+    public UserDto.Response getUserProfile(Long id) {
+        return new UserDto.Response(findUserById(id));
     }
 }

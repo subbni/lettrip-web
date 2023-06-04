@@ -32,7 +32,7 @@ public class ArticleController {
     public ModifyArticle.Response modifyArticle(
             @Valid @RequestBody ModifyArticle.Request request,
             @CurrentUser CustomUserDetails customUserDetails
-            ) {
+    ) {
         // 해당 게시글의 작성자만 게시글을 수정할 수 있어야 한다.
         return articleService.updateArticle(
                 request, customUserDetails.getId()
@@ -55,9 +55,16 @@ public class ArticleController {
     }
 
     @GetMapping
-    public Page<ShowArticleList.Response> showArticleListPage(Pageable pageable) {
-        return articleService.showAllArticlePage(pageable);
+    public Page<ShowArticleList.Response> showArticlePage(Pageable pageable) {
+        return articleService.getAllArticlePage(pageable);
     }
 
+    @GetMapping("/my")
+    public Page<ShowArticleList.Response> showUserArticlePage(
+            @CurrentUser CustomUserDetails customUserDetails,
+            Pageable pageable
+    ) {
+        return articleService.getUserArticlePage(customUserDetails.getId(), pageable);
+    }
 
 }
