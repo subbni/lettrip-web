@@ -45,6 +45,8 @@ public class PlaceDto {
         String categoryName;
         String province;
         String city;
+        float totalRating;
+        float soloFriendlyTotalRating;
 
         public Response(Place place) {
             this.id = place.getId();
@@ -55,6 +57,8 @@ public class PlaceDto {
             this.ypoint  = place.getLocationPoint().getY();
             this.province = place.getProvince().getKoreanName();
             this.city = place.getCity();
+            this.totalRating = place.getTotalRating();
+            this.soloFriendlyTotalRating = place.getSoloFriendlyTotalRating();
         }
     }
 

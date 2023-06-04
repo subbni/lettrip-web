@@ -38,6 +38,9 @@ public class ReviewDto {
 
         int soloFriendlyRating;
 
+        String writerNickname;
+        String writerImageUrl;
+
         public Response(Review review) {
             this.id = review.getId();
             this.visitTimes = review.getVisitTimes();
@@ -55,6 +58,8 @@ public class ReviewDto {
                     .detailReview(review.getDetailedReview())
                     .rating(review.getRating())
                     .soloFriendlyRating(review.getSoloFriendlyRating())
+                    .writerNickname(review.getUser().getNickname())
+                    .writerImageUrl(review.getUser().getImageUrl())
                     .build();
         }
     }
