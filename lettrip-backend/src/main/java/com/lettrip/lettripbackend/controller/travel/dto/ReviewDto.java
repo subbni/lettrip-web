@@ -28,6 +28,7 @@ public class ReviewDto {
     @NoArgsConstructor
     @Builder
     public static class Response {
+        long id;
         int visitTimes;
         List<String> fileUrls;
 
@@ -38,11 +39,23 @@ public class ReviewDto {
         int soloFriendlyRating;
 
         public Response(Review review) {
+            this.id = review.getId();
             this.visitTimes = review.getVisitTimes();
             this.fileUrls = FileService.getImageFileUrls(review.getImageFiles());
             this.detailReview = review.getDetailedReview();
             this.rating = review.getRating();
             this.soloFriendlyRating = review.getSoloFriendlyRating();
+        }
+
+        public static ReviewDto.Response fromEntity(Review review) {
+            return Response.builder()
+                    .id(review.getId())
+                    .visitTimes(review.getVisitTimes())
+                    .fileUrls(FileService.getImageFileUrls(review.getImageFiles()))
+                    .detailReview(review.getDetailedReview())
+                    .rating(review.getRating())
+                    .soloFriendlyRating(review.getSoloFriendlyRating())
+                    .build();
         }
     }
 

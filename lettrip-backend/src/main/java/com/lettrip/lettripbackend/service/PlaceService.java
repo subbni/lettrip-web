@@ -51,12 +51,18 @@ public class PlaceService {
         }
     }
 
-    public Point getFormatLocationPoint(String xPoint, String yPoint)  {
+    public PlaceDto.Response getPlaceByLocationPoint(String xpoint, String ypoint) {
+        return new PlaceDto.Response(
+                findPlaceByLocationPoint(getFormatLocationPoint(xpoint,ypoint))
+        );
+    }
+
+    public Point getFormatLocationPoint(String xpoint, String ypoint)  {
         try {
-            String pointWKT = String.format("POINT(%s %s)", xPoint, yPoint);
+            String pointWKT = String.format("POINT(%s %s)", xpoint, ypoint);
             return (Point) new WKTReader().read(pointWKT);
         } catch(ParseException e) {
-            log.error("error during formatting Place Location Point, xPoint:"+xPoint+", yPoint:"+yPoint);
+            log.error("error during formatting Place Location Point, xpoint:"+xpoint+", ypoint:"+ypoint);
             throw new LettripException(LettripErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
@@ -67,4 +73,12 @@ public class PlaceService {
                 }
         );
     }
+
+    public Place findById(Long placeId) {
+        return placeRepository.findById(placeId)
+                .orElseThrow(
+                        ()-> new ResourceNotFoundException("Place","id",placeId)
+                );
+    }
+
 }
