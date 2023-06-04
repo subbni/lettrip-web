@@ -7,16 +7,22 @@ import com.lettrip.lettripbackend.domain.travel.Review;
 import com.lettrip.lettripbackend.domain.user.User;
 import com.lettrip.lettripbackend.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class ReviewService {
     private final FileService fileService;
+    private final PlaceService placeService;
     private final ReviewRepository reviewRepository;
     private final HashSet<PlaceCategory> soloFriendlyRatingCategories
             = new HashSet<>(Arrays.asList(PlaceCategory.CE7, PlaceCategory.FD6));
@@ -45,6 +51,15 @@ public class ReviewService {
         // 해당 place 총평점 업데이트
     }
 
+    public Page<ReviewDto.Response> getAllReviewPageByPlace(Long placeId, Pageable pageable) {
+        Place place = placeService.findById(placeId);
+        Page<Review> page = reviewRepository.findByPlace(place, pageable);
+        return new PageImpl<ReviewDto.Response>(
+                reviewToDto(page.getContent()),
+                pageable,
+                page.getTotalElements()
+        );
+    }
 
     @Transactional
     public void checkAndUpdateSoloFriendlyTotalRating(Place place, int newRating) {
@@ -55,5 +70,12 @@ public class ReviewService {
     private int getVisitTimes(User user, Place place) {
         return reviewRepository.findByUserAndPlace(user,place).size();
     }
+
+    private List<ReviewDto.Response> reviewToDto(List<Review> reviewList) {
+        return reviewList.stream()
+                .map(ReviewDto.Response::fromEntity)
+                .collect(Collectors.toList());
+    }
+
 
 }

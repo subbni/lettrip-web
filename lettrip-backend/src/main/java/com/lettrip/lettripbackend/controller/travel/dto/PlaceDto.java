@@ -37,6 +37,7 @@ public class PlaceDto {
     @NoArgsConstructor
     @Builder
     public static class Response {
+        Long id;
         String name;
         double xpoint;
         double ypoint;
@@ -46,6 +47,7 @@ public class PlaceDto {
         String city;
 
         public Response(Place place) {
+            this.id = place.getId();
             this.name = place.getName();
             this.categoryCode = place.getCategoryCode();
             this.categoryName = place.getCategoryName();
