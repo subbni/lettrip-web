@@ -67,7 +67,7 @@ public class ArticleService {
     }
 
     // 게시글 전체 조회
-    public Page<ShowArticleList.Response> showAllArticlePage(Pageable pageable) {
+    public Page<ShowArticleList.Response> getAllArticlePage(Pageable pageable) {
         Page<Article> page = articleRepository.findAll(pageable);
         return new PageImpl<ShowArticleList.Response>(
                 ArticleToDto(page.getContent()),
@@ -75,6 +75,18 @@ public class ArticleService {
                 page.getTotalElements()
         );
     }
+
+    // 사용자 작성 게시글 조회
+    public Page<ShowArticleList.Response> getUserArticlePage(Long userId, Pageable pageable) {
+        User user = userService.findUserById(userId);
+        Page<Article> page = articleRepository.findByUser(user, pageable);
+        return new PageImpl<ShowArticleList.Response>(
+                ArticleToDto(page.getContent()),
+                pageable,
+                page.getTotalElements()
+        );
+    }
+
 
     private List<ShowArticleList.Response> ArticleToDto(List<Article> articleList) {
         return articleList.stream()

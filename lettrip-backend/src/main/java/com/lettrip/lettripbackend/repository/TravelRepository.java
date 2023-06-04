@@ -1,6 +1,7 @@
 package com.lettrip.lettripbackend.repository;
 
 import com.lettrip.lettripbackend.domain.travel.Travel;
+import com.lettrip.lettripbackend.domain.user.User;
 import jakarta.annotation.Nullable;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -15,4 +16,6 @@ public interface TravelRepository
         extends JpaRepository<Travel,Long>, JpaSpecificationExecutor<Travel>
 {
     Page<Travel> findAll(@Nullable Specification<Travel> spec, Pageable pageable);
+    Page<Travel> findByUser(User user, Pageable pageable);
+
 }
