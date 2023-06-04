@@ -1,5 +1,6 @@
-package com.lettrip.lettripbackend.domain.like;
+package com.lettrip.lettripbackend.domain.liked;
 
+import com.lettrip.lettripbackend.constant.LikedType;
 import com.lettrip.lettripbackend.domain.user.User;
 import jakarta.persistence.*;
 import lombok.Builder;

@@ -1,4 +1,4 @@
-package com.lettrip.lettripbackend.domain.like;
+package com.lettrip.lettripbackend.constant;
 
 public enum LikedType {
     ARTICLE_LIKE,
