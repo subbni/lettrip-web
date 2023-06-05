@@ -70,6 +70,13 @@ public class TravelController {
         return travelService.showTravel(travelId);
     }
 
+    @GetMapping("/all")
+    public Page<ShowTravelList.Response> showAllTravelPage(
+            Pageable pageable
+    ) {
+        return travelService.showAllTravelPage(pageable);
+    }
+
     @GetMapping
     public Page<ShowTravelList.Response> showTravelPage(
         @RequestParam("province") String province,
@@ -81,7 +88,7 @@ public class TravelController {
         @RequestParam(value="travelTheme", required = false) String travelTheme,
         Pageable pageable
     ) {
-        return travelService.showArticlePage(
+        return travelService.showTravelPage(
                 ShowTravelList.Request.builder()
                         .province(province)
                         .city(city)

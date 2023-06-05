@@ -86,7 +86,17 @@ public class TravelService {
     }
 
     // 여행 전체 조회
-    public Page<ShowTravelList.Response> showArticlePage(ShowTravelList.Request request, Pageable pageable) {
+    public Page<ShowTravelList.Response> showAllTravelPage(Pageable pageable) {
+        Page<Travel> page = travelRepository.findAll(pageable);
+        return new PageImpl<ShowTravelList.Response>(
+                travelToListDto(page.getContent()),
+                pageable,
+                page.getTotalElements()
+        );
+    }
+
+    // 여행 부분 조회
+    public Page<ShowTravelList.Response> showTravelPage(ShowTravelList.Request request, Pageable pageable) {
         Page<Travel> page = travelRepository.findAll(getTravelPageSpec(request),pageable);
         return new PageImpl<ShowTravelList.Response>(
                 travelToListDto(page.getContent()),
