@@ -1,5 +1,6 @@
 package com.lettrip.lettripbackend.domain.community;
 
+import com.lettrip.lettripbackend.constant.ArticleType;
 import com.lettrip.lettripbackend.domain.BaseTimeEntity;
 import com.lettrip.lettripbackend.domain.user.User;
 import jakarta.persistence.*;
@@ -28,11 +29,14 @@ public class Article extends BaseTimeEntity {
 
     private int likeCount;
 
+    @Enumerated(value=EnumType.STRING)
+    private ArticleType articleType;
     @Builder
-    public Article(User user, String title, String content) {
+    public Article(User user, String title, String content,ArticleType articleType) {
         this.user = user;
         this.title = title;
         this.content = content;
+        this.articleType = articleType;
         this.hit = 0;
         this.likeCount = 0;
     }

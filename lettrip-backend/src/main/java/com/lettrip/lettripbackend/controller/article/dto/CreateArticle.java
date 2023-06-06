@@ -21,6 +21,8 @@ public class CreateArticle {
         @NotNull
         @NotBlank
         private String content;
+
+        private String articleType;
     }
 
     @Getter

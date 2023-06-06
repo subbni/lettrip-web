@@ -1,5 +1,6 @@
 package com.lettrip.lettripbackend.service;
 
+import com.lettrip.lettripbackend.constant.ArticleType;
 import com.lettrip.lettripbackend.controller.article.dto.CreateArticle;
 import com.lettrip.lettripbackend.controller.article.dto.ModifyArticle;
 import com.lettrip.lettripbackend.controller.article.dto.ShowArticle;
@@ -34,6 +35,7 @@ public class ArticleService {
                                 .user(user)
                                 .title(request.getTitle())
                                 .content(request.getContent())
+                                .articleType(ArticleType.valueOf(request.getArticleType()))
                                 .build()
                 )
         );
