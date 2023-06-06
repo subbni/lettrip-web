@@ -5,6 +5,7 @@ import com.lettrip.lettripbackend.controller.ApiResponse;
 import com.lettrip.lettripbackend.controller.mission.dto.MissionDto;
 import com.lettrip.lettripbackend.controller.mission.dto.RankingDto;
 import com.lettrip.lettripbackend.service.MissionService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +25,7 @@ public class MissionController {
 
     @PostMapping("/ranking")
     public List<RankingDto.Response> showMissionRanking(
-            @RequestBody RankingDto.Request request
+            @Valid @RequestBody RankingDto.Request request
     ) {
         return missionService.getRankingList(request);
     }

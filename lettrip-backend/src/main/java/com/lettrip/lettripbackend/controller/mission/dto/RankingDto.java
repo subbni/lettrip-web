@@ -18,9 +18,6 @@ public class RankingDto {
         private String rankingType;
 
         @NotNull
-        private Integer count;
-
-        @NotNull
         @JsonFormat(shape = JsonFormat.Shape.STRING,
                 pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
         private LocalDate from;
