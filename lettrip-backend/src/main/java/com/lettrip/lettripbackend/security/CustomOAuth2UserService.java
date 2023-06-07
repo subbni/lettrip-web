@@ -7,9 +7,11 @@ import com.lettrip.lettripbackend.repository.UserRepository;
 import com.lettrip.lettripbackend.security.userinfo.OAuth2UserInfo;
 import com.lettrip.lettripbackend.security.userinfo.OAuth2UserInfoFactory;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.websocket.AuthenticationException;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,8 +54,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     // 같은 이메일, 다른 Provider로 로그인하지 못 하도록 한다.
     private void checkProviderTypeMatch(User user, ProviderType providerType) {
         if(user.getProviderType() != providerType) {
-            throw new OAuth2AuthenticationException("같은 이메일로 회원가입 된 SNS 계정이 존재합니다. "
-                    + user.getProviderType()+"으로 다시 시도해주세요.");
+            throw new OAuth2AuthenticationException(new OAuth2Error("중복 이메일"),"duplicated email, please try with "
+                    + user.getProviderType());
         }
     }
 
@@ -63,6 +65,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 User.builder()
                         .email(userInfo.getEmail())
                         .name(userInfo.getName())
+                        .nickname(userInfo.getName())
                         .role(Role.USER)
                         .imageUrl(userInfo.getImageUrl())
                         .providerType(userInfo.getProviderType())

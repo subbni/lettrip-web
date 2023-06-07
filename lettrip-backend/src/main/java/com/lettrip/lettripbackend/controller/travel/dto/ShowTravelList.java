@@ -39,6 +39,7 @@ public class ShowTravelList {
         long id;
         String writerNickname;
         String writerEmail;
+        String writerImageUrl;
         String title;
         String travelTheme;
         String province;
@@ -64,6 +65,7 @@ public class ShowTravelList {
                     .id(travel.getId())
                     .writerEmail(travel.getUser().getEmail())
                     .writerNickname(travel.getUser().getNickname())
+                    .writerImageUrl(travel.getUser().getImageUrl())
                     .title(travel.getTitle())
                     .travelTheme(travel.getTravelTheme().getKoreanName())
                     .province(travel.getProvince().getKoreanName())
@@ -73,6 +75,7 @@ public class ShowTravelList {
                     .lastDate(travel.getLastDate())
                     .numberOfCourses(travel.getNumberOfCourses())
                     .totalCost(travel.getTotalCost())
+                    .mainImageUrl(travel.getMainImageUrl())
                     .build();
         }
     }

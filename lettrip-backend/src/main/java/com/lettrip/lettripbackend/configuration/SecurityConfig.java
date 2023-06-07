@@ -84,7 +84,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeHttpRequests()
                 .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/articles").permitAll()
+                .requestMatchers("/api/articles","/api/travel","/api/travel/all","/api/place").permitAll()
                 .requestMatchers("/api/mission/**").permitAll()
                 .requestMatchers("/api/user/**").hasRole("USER")
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
