@@ -51,6 +51,9 @@ public class ReviewDto {
         }
 
         public static ReviewDto.Response fromEntity(Review review) {
+            if(review==null) {
+                return null;
+            }
             return Response.builder()
                     .id(review.getId())
                     .visitTimes(review.getVisitTimes())
