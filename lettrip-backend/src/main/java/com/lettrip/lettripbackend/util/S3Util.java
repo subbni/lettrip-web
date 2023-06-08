@@ -65,6 +65,39 @@ public class S3Util {
     }
 
     @Transactional
+    public ImageFile uploadFile(MultipartFile multipartFile,String dirPath) {
+        String originalFileName = multipartFile.getOriginalFilename();
+        long fileSize = multipartFile.getSize();
+
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentType(multipartFile.getContentType());
+        objectMetadata.setContentLength(fileSize);
+
+        String ext = originalFileName.substring(originalFileName.lastIndexOf('.') + 1);
+        String storedFileName = UUID.randomUUID() + "." + ext;
+        String key = dirPath + storedFileName;
+
+        // putObjectRequest ( 저장할 bucket 이름, 저장할 때 사용할 key, 저장하려는 파일의 inputStream, 파일 metadata)
+        try (InputStream inputStream = multipartFile.getInputStream()) {
+            amazonS3Client.putObject(
+                    new PutObjectRequest(bucket, key, inputStream, objectMetadata)
+                            .withCannedAcl(CannedAccessControlList.PublicRead)
+            );
+
+            return ImageFile.builder()
+                    .originalFileName(originalFileName)
+                    .storedFileName(storedFileName)
+                    .storedFileUrl(amazonS3Client.getUrl(bucket, key).toString())
+                    .fileSize(fileSize)
+                    .build();
+
+        } catch (IOException e) {
+            log.error("failed to upload MultiPartFile to S3 => "+e.getMessage());
+            throw new LettripException(LettripErrorCode.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Transactional
     public void deleteFiles(List<String> keys) {
         try {
             for (String key : keys) {

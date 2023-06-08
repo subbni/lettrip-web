@@ -11,6 +11,7 @@ public enum LettripErrorCode {
     USER_NOT_FOUND("해당 Email로 가입된 계정이 존재하지 않습니다."),
     EMAIL_CODE_NOT_MATCH("이메일 인증 코드가 일치하지 않습니다."),
     PASSWORD_NOT_MATCH("비밀번호가 일치하지 않습니다."),
+    PASSWORD_CAN_NOT_BE_CHANGED("비밀번호를 변경할 수 없습니다."),
     INTERNAL_SERVER_ERROR("서버에 오류가 발생했습니다."),
     INVALID_REQUEST("잘못된 요청입니다."),
     INVALID_CITY_NAME("행정구역 내에 존재하지 않는 지역명입니다."),
