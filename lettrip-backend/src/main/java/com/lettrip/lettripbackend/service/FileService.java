@@ -2,6 +2,8 @@ package com.lettrip.lettripbackend.service;
 
 import com.lettrip.lettripbackend.domain.ImageFile;
 import com.lettrip.lettripbackend.domain.travel.Review;
+import com.lettrip.lettripbackend.exception.LettripErrorCode;
+import com.lettrip.lettripbackend.exception.LettripException;
 import com.lettrip.lettripbackend.repository.ImageFileRepository;
 import com.lettrip.lettripbackend.util.S3Util;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +34,24 @@ public class FileService {
             imageFile.setReview(review);
         }
         imageFileRepository.saveAll(imageFiles);
+    }
+
+    public String uploadMainImageFile(String fileName) {
+        if(fileName.isEmpty() || fileName.isBlank()) {
+            return null;
+        }
+        ImageFile imageFile =
+                s3Util.uploadFile(multipartFiles.stream().filter(file-> file.getOriginalFilename().equals(fileName)).findAny()
+                        .orElseThrow(()->
+                                new LettripException(LettripErrorCode.INTERNAL_SERVER_ERROR)
+                        ),"mainImage/");
+        return imageFile.getStoredFileUrl();
+    }
+
+    public String uploadProfileImageFile(MultipartFile multipartFile) {
+        ImageFile imageFile =
+                s3Util.uploadFile(multipartFile,"profile/");
+        return imageFile.getStoredFileUrl();
     }
 
     public static void resetMultipartFiles() {

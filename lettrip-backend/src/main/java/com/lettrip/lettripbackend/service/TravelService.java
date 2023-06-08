@@ -109,16 +109,16 @@ public class TravelService {
     public Page<ShowTravelList.Response> getLikedTravels(Long userId, Pageable pageable) {
         User user = userService.findUserById(userId);
         List<Liked> likedList = likedService.findUserLikedList(user, LikedType.TRAVEL_LIKE);
-        List<Travel> travelList = likedList.stream()
+        List<Travel> likedTravelList = likedList.stream()
                 .map((liked)-> {
                     return travelRepository.findById(liked.getTargetId()).
                             orElse(null);
                 })
                 .toList();
         return new PageImpl<ShowTravelList.Response>(
-                travelToListDto(travelList),
+                travelToListDto(likedTravelList),
                 pageable,
-                travelList.size()
+                likedTravelList.size()
         );
     }
 
@@ -136,10 +136,15 @@ public class TravelService {
     private Specification<Travel> getTravelPageSpec(ShowTravelList.Request request) {
 
         Specification<Travel> spec
-                = Specification.where(TravelSpecification.equalIsVisited(true))
-                .and(TravelSpecification.equalProvince((Province.of(request.getProvince()))))
-                .and(TravelSpecification.equalCity(request.getCity()));
+                = Specification.where(TravelSpecification.equalIsVisited(true));
 
+        if(!request.getProvince().equals("all")) {
+            spec = spec .and(TravelSpecification.equalProvince((Province.of(request.getProvince()))));
+        }
+
+        if(!request.getCity().equals("all")) {
+            spec = spec.and(TravelSpecification.equalCity(request.getCity()));
+        }
         if(!request.getTravelTheme().equals("all")) {
             spec = spec.and(TravelSpecification.equalTravelTheme(TravelTheme.of(request.getTravelTheme())));
         }

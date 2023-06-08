@@ -1,9 +1,14 @@
 package com.lettrip.lettripbackend.service;
 
+import com.lettrip.lettripbackend.constant.LikedType;
 import com.lettrip.lettripbackend.constant.PlaceCategory;
 import com.lettrip.lettripbackend.constant.Province;
 import com.lettrip.lettripbackend.controller.travel.dto.PlaceDto;
+import com.lettrip.lettripbackend.controller.travel.dto.ShowTravelList;
+import com.lettrip.lettripbackend.domain.liked.Liked;
 import com.lettrip.lettripbackend.domain.travel.Place;
+import com.lettrip.lettripbackend.domain.travel.Travel;
+import com.lettrip.lettripbackend.domain.user.User;
 import com.lettrip.lettripbackend.exception.LettripErrorCode;
 import com.lettrip.lettripbackend.exception.LettripException;
 import com.lettrip.lettripbackend.exception.ResourceNotFoundException;
@@ -13,15 +18,22 @@ import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
 public class PlaceService {
     private final PlaceRepository placeRepository;
-
+    private final UserService userService;
+    private final LikedService likedService;
     @Transactional
     public Place savePlace(PlaceDto.Request placeDto) {
         try {
@@ -81,4 +93,25 @@ public class PlaceService {
                 );
     }
 
+    // 좋아요 누른 장소 조회
+    public Page<PlaceDto.Response> getLikedPlaces(Long userId, Pageable pageable) {
+        User user = userService.findUserById(userId);
+        List<Liked> likedList = likedService.findUserLikedList(user, LikedType.PLACE_LIKE);
+        List<Place> likedPlaceList = likedList.stream()
+                .map((liked)-> {
+                    return placeRepository.findById(liked.getTargetId())
+                            .orElse(null);                })
+                .toList();
+        return new PageImpl<PlaceDto.Response>(
+                placeToListDto(likedPlaceList),
+                pageable,
+                likedPlaceList.size()
+        );
+    }
+
+    private List<PlaceDto.Response> placeToListDto(List<Place> placeList) {
+        return placeList.stream()
+                .map(PlaceDto.Response::fromEntity)
+                .collect(Collectors.toList());
+    }
 }
