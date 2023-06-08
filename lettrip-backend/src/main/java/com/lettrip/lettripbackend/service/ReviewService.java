@@ -63,9 +63,10 @@ public class ReviewService {
 
     @Transactional
     public void checkAndUpdateSoloFriendlyTotalRating(Place place, int newRating) {
-        if(soloFriendlyRatingCategories.contains(place.getCategoryCode())) {
-            place.updateSoloFriendlyTotalRating(newRating);
-        }
+//        if(soloFriendlyRatingCategories.contains(place.getCategoryCode())) {
+//            place.updateSoloFriendlyTotalRating(newRating);
+//        }
+        place.updateSoloFriendlyTotalRating(newRating);
     }
     private int getVisitTimes(User user, Place place) {
         return reviewRepository.findByUserAndPlace(user,place).size();
