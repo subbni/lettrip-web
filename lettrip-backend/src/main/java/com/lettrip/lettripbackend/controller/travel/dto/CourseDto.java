@@ -53,7 +53,8 @@ public class CourseDto {
             this.cost = course.getCost();
             this.dayCount = course.getDayCount();
             this.place = new PlaceDto.Response(course.getPlace());
-            this.review = new ReviewDto.Response(course.getReview());
+            this.review = ReviewDto.Response.fromEntity(course.getReview());
+
         }
 
     }
