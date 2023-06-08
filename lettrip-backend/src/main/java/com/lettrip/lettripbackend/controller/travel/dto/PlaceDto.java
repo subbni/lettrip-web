@@ -60,6 +60,21 @@ public class PlaceDto {
             this.totalRating = place.getTotalRating();
             this.soloFriendlyTotalRating = place.getSoloFriendlyTotalRating();
         }
+
+        public static Response fromEntity(Place place) {
+            return Response.builder()
+                    .id(place.getId())
+                    .name(place.getName())
+                    .categoryCode(place.getCategoryCode())
+                    .categoryName(place.getCategoryName())
+                    .xpoint(place.getLocationPoint().getX())
+                    .ypoint(place.getLocationPoint().getY())
+                    .province(place.getProvince().getKoreanName())
+                    .city(place.getCity())
+                    .totalRating(place.getTotalRating())
+                    .soloFriendlyTotalRating(place.getSoloFriendlyTotalRating())
+                    .build();
+        }
     }
 
 }
