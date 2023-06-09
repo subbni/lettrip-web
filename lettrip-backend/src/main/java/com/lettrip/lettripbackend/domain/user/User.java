@@ -60,6 +60,12 @@ public class User {
         this.imageUrl = imageUrl;
     }
 
+    public void withdraw() {
+        this.name="";
+        this.email = "";
+        this.password = "";
+        this.role=Role.NOUSER;
+    }
     public void setName(String name) {
         this.name = name;
     }

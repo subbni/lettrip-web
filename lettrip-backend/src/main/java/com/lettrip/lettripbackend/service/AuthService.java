@@ -1,5 +1,6 @@
 package com.lettrip.lettripbackend.service;
 
+import com.lettrip.lettripbackend.controller.ApiResponse;
 import com.lettrip.lettripbackend.controller.auth.dto.LogInUser;
 import com.lettrip.lettripbackend.controller.auth.dto.SignUpUser;
 import com.lettrip.lettripbackend.domain.user.ProviderType;
@@ -27,6 +28,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final UserService userService;
     private final JwtProvider jwtProvider;
 
     @Transactional
@@ -90,6 +92,12 @@ public class AuthService {
     }
 
 
+    @Transactional
+    public ApiResponse withdrawUser(Long userId) {
+        User user = userService.findUserById(userId);
+        user.withdraw();
+        return new ApiResponse(true,"탈퇴되었습니다.");
+    }
 }
 
 
