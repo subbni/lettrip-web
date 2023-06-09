@@ -3,6 +3,8 @@ package com.lettrip.lettripbackend.controller.auth;
 import com.lettrip.lettripbackend.controller.ApiResponse;
 import com.lettrip.lettripbackend.controller.auth.dto.LogInUser;
 import com.lettrip.lettripbackend.controller.auth.dto.SignUpUser;
+import com.lettrip.lettripbackend.security.CurrentUser;
+import com.lettrip.lettripbackend.security.CustomUserDetails;
 import com.lettrip.lettripbackend.service.AuthService;
 import com.lettrip.lettripbackend.service.MailService;
 import jakarta.validation.Valid;
@@ -31,7 +33,10 @@ public class AuthController {
     }
 
     @DeleteMapping("/withdraw")
-    public void withdraw() {
+    public ApiResponse withdraw(
+            @CurrentUser CustomUserDetails customUserDetails
+            ) {
+        return authService.withdrawUser(customUserDetails.getId());
         // TODO: 고려할 사항이 많아서 일단 보류, social login까지 구현한 뒤 구현 필요
     }
 
