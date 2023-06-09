@@ -58,14 +58,14 @@ public class TravelService {
         // 각 Course들을 Travel에 저장
         courseService.saveCourses(travel, travelDto.getCourses());
         FileService.resetMultipartFiles();
-        return new ApiResponse(true, "여행 코스가 저장되었습니다.");
+        return new ApiResponse(true, "여행 코스가 저장되었습니다.",travel.getId());
     }
 
     public ApiResponse deleteTravel(Long travelId, Long userId) {
         Travel travel = findTravelById(travelId);
         checkIfWriter(travel,userId);
         travelRepository.delete(travel);
-        return new ApiResponse(true,"여행 코스가 삭제되었습니다.");
+        return new ApiResponse(true,"여행 코스가 삭제되었습니다.",travel.getId());
     }
 
     public TravelDto.Response showTravel(Long travelId) {
