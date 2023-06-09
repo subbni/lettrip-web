@@ -91,11 +91,11 @@ public class AuthService {
 
     }
 
-
     @Transactional
     public ApiResponse withdrawUser(Long userId) {
         User user = userService.findUserById(userId);
         user.withdraw();
+        userRepository.save(user);
         return new ApiResponse(true,"탈퇴되었습니다.");
     }
 }

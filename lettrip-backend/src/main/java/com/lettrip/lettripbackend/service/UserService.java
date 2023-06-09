@@ -44,6 +44,7 @@ public class UserService {
         if(!user.getNickname().equals(request.getNickname())) {
             user.setNickname(request.getNickname());
         }
+        userRepository.save(user);
         return new ApiResponse(true,"닉네임 변경이 완료되었습니다.");
     }
 
@@ -51,6 +52,7 @@ public class UserService {
     public ApiResponse updateImageUrl(Long userId, MultipartFile multipartFile) {
         User user = findUserById(userId);
         user.setImageUrl(fileService.uploadProfileImageFile(multipartFile));
+        userRepository.save(user);
         return new ApiResponse(true,"프로필 사진 변경이 완료되었습니다.");
     }
 
