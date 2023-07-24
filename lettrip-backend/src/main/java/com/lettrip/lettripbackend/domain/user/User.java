@@ -15,15 +15,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotNull
     @Email
     private String email;
 
     private String password;
 
-    @NotNull
-    @NotBlank
-    @Size(min=2,max=20)
     private String name;
 
     @Size(min=2,max=30)
