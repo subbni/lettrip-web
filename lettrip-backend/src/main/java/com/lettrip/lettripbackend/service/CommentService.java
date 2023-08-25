@@ -109,6 +109,7 @@ public class CommentService {
                 pageable, page.getTotalElements());
     }
 
+    @Transactional
     public ApiResponse deleteComment(Long commentId, Long userId) {
         // 1. 본인 작성 댓글인지 확인
         Comment comment = findCommentById(commentId);
