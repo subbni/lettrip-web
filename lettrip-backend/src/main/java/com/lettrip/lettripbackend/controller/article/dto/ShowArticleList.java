@@ -26,7 +26,7 @@ public class ShowArticleList {
                     .writerNickname(article.getUser().getNickname())
                     .title(article.getTitle())
                     .hit(article.getHit())
-                    .likedCount(article.getLikeCount())
+                    .likedCount(article.getLikedCount())
                     .commentCount(article.getCommentCount())
                     .createdDate(article.getCreatedDate())
                     .build();

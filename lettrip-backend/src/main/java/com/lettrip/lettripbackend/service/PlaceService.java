@@ -86,13 +86,6 @@ public class PlaceService {
         );
     }
 
-    public Place findById(Long placeId) {
-        return placeRepository.findById(placeId)
-                .orElseThrow(
-                        ()-> new ResourceNotFoundException("Place","id",placeId)
-                );
-    }
-
     // 좋아요 누른 장소 조회
     public Page<PlaceDto.Response> getLikedPlaces(Long userId, Pageable pageable) {
         User user = userService.findUserById(userId);
@@ -107,6 +100,13 @@ public class PlaceService {
                 pageable,
                 likedPlaceList.size()
         );
+    }
+
+    public Place findById(Long placeId) {
+        return placeRepository.findById(placeId)
+                .orElseThrow(
+                        ()-> new ResourceNotFoundException("Place","id",placeId)
+                );
     }
 
     private List<PlaceDto.Response> placeToListDto(List<Place> placeList) {
