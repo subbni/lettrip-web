@@ -20,6 +20,7 @@ public class ShowArticle {
         String content;
         int hit;
         int likedCount;
+        int commentCount;
         private LocalDateTime createdDate;
         private LocalDateTime modifiedDate;
 
@@ -32,6 +33,7 @@ public class ShowArticle {
                     .content(article.getContent())
                     .hit(article.getHit())
                     .likedCount(article.getLikeCount())
+                    .commentCount(article.getCommentCount())
                     .createdDate(article.getCreatedDate())
                     .modifiedDate(article.getModifiedDate())
                     .build();
