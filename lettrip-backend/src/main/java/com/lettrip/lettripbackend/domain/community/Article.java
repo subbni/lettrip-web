@@ -28,6 +28,7 @@ public class Article extends BaseTimeEntity {
     private int hit;
 
     private int likeCount;
+    private int commentCount;
 
     @Enumerated(value=EnumType.STRING)
     private ArticleType articleType;
@@ -39,6 +40,7 @@ public class Article extends BaseTimeEntity {
         this.articleType = articleType;
         this.hit = 0;
         this.likeCount = 0;
+        this.commentCount = 0;
     }
 
     public Article update(String title, String content) {
@@ -49,6 +51,7 @@ public class Article extends BaseTimeEntity {
     public void updateLikeCount(int amount) {
         likeCount += amount;
     }
+    public void updateCommentCount(int amount) { commentCount += amount; }
 
     public void addHit() {
         hit++;
