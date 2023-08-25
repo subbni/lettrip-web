@@ -17,6 +17,7 @@ public class ShowArticleList {
         String title;
         int hit;
         int likedCount;
+        int commentCount;
         private LocalDateTime createdDate;
 
         public static ShowArticleList.Response fromEntity(Article article) {
@@ -26,6 +27,7 @@ public class ShowArticleList {
                     .title(article.getTitle())
                     .hit(article.getHit())
                     .likedCount(article.getLikeCount())
+                    .commentCount(article.getCommentCount())
                     .createdDate(article.getCreatedDate())
                     .build();
         }

@@ -34,6 +34,7 @@ public class CommentService {
 
         User user = userService.findUserById(userId);
         Article article = articleService.findArticleById(request.getArticle_id());
+        articleService.updateArticleCommentCount(article,1);
 
         if(request.getParent_comment_id() == null && request.getMentioned_user_email()==null) {
             return saveParentComment(user,article,request);
@@ -108,12 +109,16 @@ public class CommentService {
                 pageable, page.getTotalElements());
     }
 
+    @Transactional
     public ApiResponse deleteComment(Long commentId, Long userId) {
         // 1. 본인 작성 댓글인지 확인
         Comment comment = findCommentById(commentId);
+        Article article = comment.getArticle();
+
         checkIfWriter(comment,userId);
         // 2. 삭제
         commentRepository.delete(comment);
+        articleService.updateArticleCommentCount(article,-1);
         return new ApiResponse(true,"댓글이 삭제되었습니다.");
     }
 

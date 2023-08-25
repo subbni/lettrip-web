@@ -101,9 +101,16 @@ public class ArticleService {
         }
     }
 
+    @Transactional
     protected Article updateArticleHit(Article article) {
         article.addHit();
         return article;
+    }
+
+    @Transactional
+    public void updateArticleCommentCount(Article article, int amount) {
+        article.updateCommentCount(amount);
+
     }
 
     public Article findArticleById(long articleId) {
