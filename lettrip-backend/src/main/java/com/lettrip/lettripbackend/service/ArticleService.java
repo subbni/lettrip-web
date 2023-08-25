@@ -1,12 +1,14 @@
 package com.lettrip.lettripbackend.service;
 
 import com.lettrip.lettripbackend.constant.ArticleType;
+import com.lettrip.lettripbackend.constant.LikedType;
 import com.lettrip.lettripbackend.controller.article.dto.CreateArticle;
 import com.lettrip.lettripbackend.controller.article.dto.ModifyArticle;
 import com.lettrip.lettripbackend.controller.article.dto.ShowArticle;
 import com.lettrip.lettripbackend.controller.ApiResponse;
 import com.lettrip.lettripbackend.controller.article.dto.ShowArticleList;
 import com.lettrip.lettripbackend.domain.community.Article;
+import com.lettrip.lettripbackend.domain.liked.Liked;
 import com.lettrip.lettripbackend.domain.user.User;
 import com.lettrip.lettripbackend.exception.ResourceNotFoundException;
 import com.lettrip.lettripbackend.repository.ArticleRepository;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 @Service
 public class ArticleService {
     private final UserService userService;
+    private final LikedService likedService;
     private final ArticleRepository articleRepository;
 
     @Transactional
@@ -72,7 +75,7 @@ public class ArticleService {
     public Page<ShowArticleList.Response> getAllArticlePage(Pageable pageable) {
         Page<Article> page = articleRepository.findAll(pageable);
         return new PageImpl<ShowArticleList.Response>(
-                ArticleToDto(page.getContent()),
+                articleToDto(page.getContent()),
                 pageable,
                 page.getTotalElements()
         );
@@ -83,14 +86,29 @@ public class ArticleService {
         User user = userService.findUserById(userId);
         Page<Article> page = articleRepository.findByUser(user, pageable);
         return new PageImpl<ShowArticleList.Response>(
-                ArticleToDto(page.getContent()),
+                articleToDto(page.getContent()),
                 pageable,
                 page.getTotalElements()
         );
     }
 
+    // 좋아요 누른 게시글 조회
+    public Page<ShowArticleList.Response> getLikedPlaces(Long userId, Pageable pageable) {
+        User user = userService.findUserById(userId);
+        List<Liked> likedList = likedService.findUserLikedList(user, LikedType.ARTICLE_LIKE);
+        List<Article> likedArticleList = likedList.stream()
+                .map((liked)-> {
+                    return articleRepository.findById(liked.getTargetId())
+                            .orElse(null);
+                }).toList();
+        return new PageImpl<>(
+                articleToDto(likedArticleList),
+                pageable,
+                likedArticleList.size()
+        );
+    }
 
-    private List<ShowArticleList.Response> ArticleToDto(List<Article> articleList) {
+    private List<ShowArticleList.Response> articleToDto(List<Article> articleList) {
         return articleList.stream()
                 .map(ShowArticleList.Response::fromEntity)
                 .collect(Collectors.toList());
@@ -110,7 +128,12 @@ public class ArticleService {
     @Transactional
     public void updateArticleCommentCount(Article article, int amount) {
         article.updateCommentCount(amount);
+    }
 
+    @Transactional
+    public void updateLikedCount(Long articleId, int amount) {
+        Article article = findArticleById(articleId);
+        article.updateLikedCount(amount);
     }
 
     public Article findArticleById(long articleId) {

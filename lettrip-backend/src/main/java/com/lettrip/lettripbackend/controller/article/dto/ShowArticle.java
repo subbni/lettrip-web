@@ -32,7 +32,7 @@ public class ShowArticle {
                     .title(article.getTitle())
                     .content(article.getContent())
                     .hit(article.getHit())
-                    .likedCount(article.getLikeCount())
+                    .likedCount(article.getLikedCount())
                     .commentCount(article.getCommentCount())
                     .createdDate(article.getCreatedDate())
                     .modifiedDate(article.getModifiedDate())
