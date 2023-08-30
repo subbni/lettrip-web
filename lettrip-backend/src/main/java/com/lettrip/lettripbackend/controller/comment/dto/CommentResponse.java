@@ -15,6 +15,7 @@ public class CommentResponse {
 
     private Long id;
     private Long user_id;
+    private String user_email;
     private Long parent_comment_id;
     private Long mentioned_user_id;
     private String nickname;
@@ -24,6 +25,7 @@ public class CommentResponse {
     public CommentResponse(Comment comment) {
         this.id = comment.getId();
         this.user_id = comment.getUser().getId();
+        this.user_email = comment.getUser().getEmail();
         this.parent_comment_id = comment.getParent_comment_id();
         this.mentioned_user_id = comment.getMentioned_user_id();
         this.nickname = comment.getUser().getNickname();
