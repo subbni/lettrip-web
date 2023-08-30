@@ -42,6 +42,8 @@ dependencies {
 	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.mysql:mysql-connector-j'
+	// https://mvnrepository.com/artifact/net.bytebuddy/byte-buddy-gradle-plugin
+	runtimeOnly group: 'net.bytebuddy', name: 'byte-buddy-gradle-plugin', version: '1.14.2'
 	annotationProcessor 'org.projectlombok:lombok'
 	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 	testImplementation 'org.springframework.security:spring-security-test'
