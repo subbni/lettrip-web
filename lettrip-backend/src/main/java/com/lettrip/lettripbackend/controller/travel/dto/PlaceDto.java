@@ -29,6 +29,8 @@ public class PlaceDto {
         String province;
         @NotNull
         String city;
+
+        String address;
     }
 
     @Getter
@@ -45,6 +47,8 @@ public class PlaceDto {
         String categoryName;
         String province;
         String city;
+
+        String address;
         float totalRating;
         float soloFriendlyTotalRating;
 
@@ -57,6 +61,7 @@ public class PlaceDto {
             this.ypoint  = place.getLocationPoint().getY();
             this.province = place.getProvince().getKoreanName();
             this.city = place.getCity();
+            this.address = place.getAddress();
             this.totalRating = place.getTotalRating();
             this.soloFriendlyTotalRating = place.getSoloFriendlyTotalRating();
         }
@@ -71,6 +76,7 @@ public class PlaceDto {
                     .ypoint(place.getLocationPoint().getY())
                     .province(place.getProvince().getKoreanName())
                     .city(place.getCity())
+                    .address(place.getAddress())
                     .totalRating(place.getTotalRating())
                     .soloFriendlyTotalRating(place.getSoloFriendlyTotalRating())
                     .build();

@@ -36,6 +36,8 @@ public class Place {
     Province province;
     String city;
 
+    private String address;
+
     @OneToMany(mappedBy = "place")
     private List<Review> reviews = new ArrayList<>();
 
@@ -51,7 +53,8 @@ public class Place {
             PlaceCategory categoryCode,
             String categoryName,
             Province province,
-            String city
+            String city,
+            String address
     ) {
         this.name = name;
         this.locationPoint = locationPoint;
@@ -59,6 +62,7 @@ public class Place {
         this.categoryName = categoryName;
         this.province = province;
         this.city = city;
+        this.address = address;
         this.totalRating = 0f;
         this.soloFriendlyTotalRating = 0f;
     }
