@@ -37,9 +37,8 @@ public class Review extends BaseTimeEntity {
 
     private String placeName;
 
-    @Enumerated(value=EnumType.STRING)
-    private PlaceCategory placeCategory;
-
+    private String placeCategory;
+    // TODO: REVIEW 테이블 컬럼명과의 불일치, placeCategoryName이나 categoryName으로의 변경
     private String address;
 
     @OneToMany(
@@ -77,7 +76,7 @@ public class Review extends BaseTimeEntity {
         this.rating=rating;
         this.soloFriendlyRating = soloFriendlyRating;
         this.placeName = place.getName();
-        this.placeCategory = place.getCategoryCode();
+        this.placeCategory = place.getCategoryName();
         this.address = place.getAddress();
     }
 
