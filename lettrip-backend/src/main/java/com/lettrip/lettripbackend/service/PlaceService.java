@@ -58,6 +58,7 @@ public class PlaceService {
                             .city(Province.getCityInProvince(
                                     Province.of(placeDto.getProvince()), placeDto.getCity()
                             ))
+                            .address(placeDto.getAddress())
                             .build()
             );
         }

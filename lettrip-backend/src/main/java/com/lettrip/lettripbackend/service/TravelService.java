@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,12 +30,14 @@ public class TravelService {
     private final TravelRepository travelRepository;
     private final UserService userService;
     private final CourseService courseService;
-
     private final LikedService likedService;
 
+    private final FileService fileService;
+
     @Transactional
-    public ApiResponse saveTravel(Long userId, TravelDto.Request travelDto) {
+    public ApiResponse saveTravel(Long userId, TravelDto.Request travelDto,List<MultipartFile> multipartFiles) {
         User user = userService.findUserById(userId);
+        FileService.multipartFiles = multipartFiles;
         Travel travel = travelRepository.save(
                 Travel.builder()
                         .user(user)
@@ -57,7 +60,8 @@ public class TravelService {
         );
         // 각 Course들을 Travel에 저장
         courseService.saveCourses(travel, travelDto.getCourses());
-        FileService.resetMultipartFiles();
+        travel.setMainImageUrl(fileService.getImageFileUrl(travelDto.getMainImageName()));
+        fileService.resetMultipartFiles();
         return new ApiResponse(true, "여행 코스가 저장되었습니다.",travel.getId());
     }
 

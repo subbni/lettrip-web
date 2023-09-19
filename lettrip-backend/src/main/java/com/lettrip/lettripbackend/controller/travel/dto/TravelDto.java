@@ -33,6 +33,7 @@ public class TravelDto {
         private long totalCost;
         private int numberOfCourses;
 
+        private String mainImageName;
         private List<CourseDto.Request> courses;
     }
 

@@ -1,5 +1,6 @@
 package com.lettrip.lettripbackend.domain.travel;
 
+import com.lettrip.lettripbackend.constant.PlaceCategory;
 import com.lettrip.lettripbackend.domain.BaseTimeEntity;
 import com.lettrip.lettripbackend.domain.ImageFile;
 import com.lettrip.lettripbackend.domain.user.User;
@@ -34,9 +35,15 @@ public class Review extends BaseTimeEntity {
 
     private int visitTimes;
 
+    private String placeName;
+
+    private String placeCategory;
+    // TODO: REVIEW 테이블 컬럼명과의 불일치, placeCategoryName이나 categoryName으로의 변경
+    private String address;
+
     @OneToMany(
             mappedBy = "review",
-            cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+            cascade = {CascadeType.ALL, CascadeType.REMOVE},
             orphanRemoval = true
     )
     private List<ImageFile> imageFiles = new ArrayList<>();
@@ -68,6 +75,9 @@ public class Review extends BaseTimeEntity {
         this.detailedReview=detailedReview;
         this.rating=rating;
         this.soloFriendlyRating = soloFriendlyRating;
+        this.placeName = place.getName();
+        this.placeCategory = place.getCategoryName();
+        this.address = place.getAddress();
     }
 
     public void update(String detailedReview) {

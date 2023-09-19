@@ -22,10 +22,17 @@ public enum Province {
     SEJONG("세종특별자치시", List.of("세종")),
     GYEONGGI("경기도",City.GYEONGGI_CITY),
     GANGWON("강원도",City.GANGWON_CITY),
-    CHUNGCHEONG("충청도",City.CHUNGCHEONG_CITY),
-    JEOLLA("전라도",City.JEOLLA_CITY),
-    GYEONGSANG("경상도",City.GYEONGSANG_CITY),
+    CHUNGCHEONGBUKDO("충청북도",City.CHUNGCHEONG_BUKDO_CITY),
+    CHUNGCHEONGNAMDO("충청남도",City.CHUNGCHEONG_NAMDO_CITY),
+    // 충청남도와 충청북도로 구분
+    JEOLLABUKDO("전라도",City.JEOLLA_BUKDO_CITY),
+    JEOLLANAMDO("전라도",City.JEOLLA_NAMDO_CITY),
+    // 전라남도와 전라북도로 구분
+    GYEONGSANGBUKDO("경상북도",City.GYEONGSANG_BUKDO_CITY),
+    GYEONGSANGNAMDO("경상남도",City.GYEONGSANG_NAMDO_CITY),
+    // 경상남도와 경상북도로 구분
     JEJU("제주특별자치도",City.JEJU_CITY);
+
 
     private final String koreanName;
     private final List<String> cities;
