@@ -2,8 +2,10 @@ package com.lettrip.lettripbackend.service;
 
 import com.lettrip.lettripbackend.domain.ImageFile;
 import com.lettrip.lettripbackend.domain.travel.Review;
+import com.lettrip.lettripbackend.domain.travel.Travel;
 import com.lettrip.lettripbackend.exception.LettripErrorCode;
 import com.lettrip.lettripbackend.exception.LettripException;
+import com.lettrip.lettripbackend.exception.ResourceNotFoundException;
 import com.lettrip.lettripbackend.repository.ImageFileRepository;
 import com.lettrip.lettripbackend.util.S3Util;
 import lombok.RequiredArgsConstructor;
@@ -13,15 +15,15 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class FileService {
     public static List<MultipartFile> multipartFiles;
-    public final ImageFileRepository imageFileRepository;
     public final S3Util s3Util;
-
+    private final ImageFileRepository imageFileRepository;
     @Transactional
     public void uploadImageFiles(Review review, List<String> fileNames) {
         if(multipartFiles ==  null) {
@@ -36,25 +38,13 @@ public class FileService {
         imageFileRepository.saveAll(imageFiles);
     }
 
-    public String uploadMainImageFile(String fileName) {
-        if(fileName.isEmpty() || fileName.isBlank()) {
-            return null;
-        }
-        ImageFile imageFile =
-                s3Util.uploadFile(multipartFiles.stream().filter(file-> file.getOriginalFilename().equals(fileName)).findAny()
-                        .orElseThrow(()->
-                                new LettripException(LettripErrorCode.INTERNAL_SERVER_ERROR)
-                        ),"mainImage/");
-        return imageFile.getStoredFileUrl();
-    }
-
     public String uploadProfileImageFile(MultipartFile multipartFile) {
         ImageFile imageFile =
                 s3Util.uploadFile(multipartFile,"profile/");
         return imageFile.getStoredFileUrl();
     }
 
-    public static void resetMultipartFiles() {
+    public void resetMultipartFiles() {
         FileService.multipartFiles = null;
     }
 
@@ -67,6 +57,17 @@ public class FileService {
             fileUrls.add(imageFile.getStoredFileUrl());
         }
         return fileUrls;
+    }
+
+    public String getImageFileUrl(String fileName) {
+        if(fileName == null || fileName.isEmpty()) {
+            return null;
+        }
+        ImageFile imageFile = imageFileRepository.findByOriginalFileName(fileName)
+                .orElseThrow(()-> {
+                            throw new ResourceNotFoundException("imageFile", "originalFileName", fileName);
+                        });
+        return imageFile.getStoredFileUrl();
     }
 
     public void deleteImageFiles(List<ImageFile> imageFiles) {

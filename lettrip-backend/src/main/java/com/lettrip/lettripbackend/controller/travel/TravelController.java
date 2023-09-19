@@ -35,8 +35,8 @@ public class TravelController {
             @Valid @RequestPart(value="travel") TravelDto.Request travelDto,
             @RequestPart(value="files", required = false) List<MultipartFile> multipartFiles
             ) {
-        FileService.multipartFiles = multipartFiles;
-        return  travelService.saveTravel(customUserDetails.getId(),travelDto);
+        // FileService.multipartFiles = multipartFiles;
+        return  travelService.saveTravel(customUserDetails.getId(),travelDto,multipartFiles);
     }
 
     @PostMapping("/plan/create")
@@ -44,7 +44,7 @@ public class TravelController {
             @CurrentUser CustomUserDetails customUserDetails,
             @Valid @RequestBody  TravelDto.Request travelDto
     ) {
-        return  travelService.saveTravel(customUserDetails.getId(),travelDto);
+        return  travelService.saveTravel(customUserDetails.getId(),travelDto,null);
     }
 
     @PutMapping("/modify")

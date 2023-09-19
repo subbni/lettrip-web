@@ -91,7 +91,7 @@ public class Travel extends BaseTimeEntity {
         }
     }
 
-    public void setMainImage(String mainImageUrl) {
+    public void setMainImageUrl(String mainImageUrl) {
         this.mainImageUrl = mainImageUrl;
     }
 }
