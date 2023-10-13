@@ -83,6 +83,7 @@ public class SecurityConfig {
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .and()
                 .authorizeHttpRequests()
+                .requestMatchers("/ws/**").permitAll()
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/articles","/api/travel","/api/travel/all","/api/place").permitAll()
                 .requestMatchers("/api/mission/**").permitAll()
