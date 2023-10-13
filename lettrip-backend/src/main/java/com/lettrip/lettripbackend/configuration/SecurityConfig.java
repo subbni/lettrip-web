@@ -88,7 +88,6 @@ public class SecurityConfig {
                 .requestMatchers("/api/articles","/api/travel","/api/travel/all","/api/place").permitAll()
                 .requestMatchers("/api/mission/**").permitAll()
                 .requestMatchers("/api/user/**").hasRole("USER")
-                .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .anyRequest().hasRole("USER")
                 .and()
                 .oauth2Login()
