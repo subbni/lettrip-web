@@ -3,8 +3,11 @@ package com.lettrip.lettripbackend.domain.user;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor
@@ -36,6 +39,11 @@ public class User {
     private ProviderType providerType;
 
     private int point;
+    @Enumerated(EnumType.STRING)
+    private Sex sex;
+    private LocalDate birthDate;
+    private int meetUpCompletedCount;
+    private int meetUpCancelledCount;
 
     @Builder
     public User(String email, String password, String name,
@@ -48,14 +56,9 @@ public class User {
         this.providerType = providerType;
         this.role = role;
         this.point = 0;
+        this.meetUpCompletedCount = 0;
+        this.meetUpCancelledCount = 0;
     }
-
-    public void update(String name, String nickname, String imageUrl) {
-        this.name = name;
-        this.nickname = nickname;
-        this.imageUrl = imageUrl;
-    }
-
     public void withdraw() {
         this.name="";
         this.email = "";
@@ -82,4 +85,22 @@ public class User {
         this.point += point;
     }
 
+    public void update(String name, String nickname, String imageUrl) {
+        this.name = name;
+        this.nickname = nickname;
+        this.imageUrl = imageUrl;
+    }
+
+    public void profileUpdate(Sex sex, LocalDate birthDate) {
+        this.sex = sex;
+        this.birthDate = birthDate;
+    }
+
+    public void addMeetUpCompletedCount() {
+        this.meetUpCompletedCount+=1;
+    }
+
+    public void addMeetUpCancelledCount() {
+        this.meetUpCancelledCount+=1;
+    }
 }
