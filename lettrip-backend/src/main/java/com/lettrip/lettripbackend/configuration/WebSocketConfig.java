@@ -13,7 +13,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
 
-        registry.addEndpoint("ws/chat")
+        registry.addEndpoint("/ws/chat")
                 .setAllowedOrigins("*"); //  (*: 모든 origin 허용)
         // TODO: 배포시 특정 origin만 등록하기
     }
