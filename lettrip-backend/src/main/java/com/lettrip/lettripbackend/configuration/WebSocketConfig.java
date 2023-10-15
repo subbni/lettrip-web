@@ -15,7 +15,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
         registry.addEndpoint("/ws/chat")
                 .setAllowedOrigins("*"); //  (*: 모든 origin 허용)
-        // TODO: 배포시 특정 origin만 등록하기
+        //TODO: 배포시 특정 origin만 등록하기
     }
 
     /* 어플리케이션 내부에서 사용할 path를 지정 */
