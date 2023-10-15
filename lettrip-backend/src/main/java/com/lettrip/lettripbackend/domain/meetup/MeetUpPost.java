@@ -4,6 +4,7 @@ import com.lettrip.lettripbackend.constant.MeetUpPostStatus;
 import com.lettrip.lettripbackend.constant.Province;
 import com.lettrip.lettripbackend.constant.MeetUpStatus;
 import com.lettrip.lettripbackend.constant.converter.ProvincePersistConverter;
+import com.lettrip.lettripbackend.domain.BaseTimeEntity;
 import com.lettrip.lettripbackend.domain.travel.Place;
 import com.lettrip.lettripbackend.domain.travel.Travel;
 import com.lettrip.lettripbackend.domain.user.User;
@@ -12,26 +13,12 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
 
-import java.time.LocalDate;
-
-/*
-- id (unique)
-- user id
-- isGPSEnabled
-- title
-- meetUpDate
-- province
-- city
-- content
-- place (nullable)
-- travel id (nullable) (여행 계획 게시글)
-- status
- */
 @Getter
 @NoArgsConstructor
 @Entity
-public class MeetUpPost {
+public class MeetUpPost extends BaseTimeEntity {
     @Id
     @Column(name="MEET_UP_POST_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,7 +30,7 @@ public class MeetUpPost {
 
     @Column(name="is_gps_enbaled")
     private boolean isGPSEnabled;
-    private LocalDate meetUpDate;
+    private LocalDateTime meetUpDate;
 
     @Convert(converter = ProvincePersistConverter.class)
     private Province province;
@@ -67,7 +54,7 @@ public class MeetUpPost {
     @Builder
     public MeetUpPost(User user,
                       boolean isGPSEnabled,
-                      LocalDate meetUpDate,
+                      LocalDateTime meetUpDate,
                       Province province,
                       String city,
                       String title,
