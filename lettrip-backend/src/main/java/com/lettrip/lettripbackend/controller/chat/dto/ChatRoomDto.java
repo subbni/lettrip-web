@@ -29,6 +29,7 @@ public class ChatRoomDto {
             return Response.builder()
                     .roomId(chatRoom.getId())
                     .lastMessage(chatRoom.getLastMessage())
+                    .lastMessageTime(chatRoom.getLastMessageTime())
                     .build();
         }
     }

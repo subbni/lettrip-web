@@ -30,7 +30,7 @@ public class ChatService {
                         .isImage(request.getIsImage())
                         .build()
         );
-        chatRoomService.updateLastMessage(chat.getRoomId(), chat.getMessage());
+        chatRoomService.updateLastMessage(chat.getRoomId(), chat.getMessage(), chat.getCreatedAt());
     }
 
     public Page<ChatDto.Response> getChatHistory(String roomId, Pageable pageable) {
