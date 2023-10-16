@@ -19,8 +19,9 @@ public class PlaceController {
     public ApiResponse createPlace(
            @Valid @RequestBody PlaceDto.Request request
     ) {
-       placeService.savePlace(request);
-       return new ApiResponse(true,"해당 장소가 저장되었습니다.");
+       return new ApiResponse(true,
+               "해당 장소가 저장되었습니다.",
+               placeService.savePlace(request).getId());
     }
 
     @GetMapping

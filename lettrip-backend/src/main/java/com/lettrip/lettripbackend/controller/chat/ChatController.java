@@ -13,8 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
-@RequestMapping("/api/chat")
 @RestController
+@RequestMapping("/api/chat")
 public class ChatController {
     private final ChatRoomService chatRoomService;
     private final ChatService chatService;
@@ -47,4 +47,13 @@ public class ChatController {
     ) {
         return chatService.getChatHistory(roomId, pageable);
     }
+
+    @GetMapping("/my")
+    public Page<ChatRoomDto.Response> showUserChatRoomPage(
+            @CurrentUser CustomUserDetails customUserDetails,
+            Pageable pageable
+    ) {
+        return chatRoomService.getUserChatRoomPage(customUserDetails.getId(), pageable);
+    }
+
 }

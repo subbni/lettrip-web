@@ -1,13 +1,17 @@
 package com.lettrip.lettripbackend.mongo.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 
 @Getter
@@ -25,6 +29,8 @@ public class Chat {
     @Field(name="receive_user_id")
     private long receiveUserId;
 
+    @CreatedDate
+    @Column(updatable = false)
     @Field(name="created_at")
     private LocalDateTime createdAt;
 
@@ -37,7 +43,13 @@ public class Chat {
         this.message = message;
         this.sendUserId = sendUserId;
         this.receiveUserId = receiveUserId;
-        this.createdAt = LocalDateTime.now();
         this.isImage = isImage;
     }
+
+    @PrePersist
+    public void onPrePersist() {
+        String customLocalDateTimeFormat = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        this.createdAt = LocalDateTime.parse(customLocalDateTimeFormat, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    }
+
 }
