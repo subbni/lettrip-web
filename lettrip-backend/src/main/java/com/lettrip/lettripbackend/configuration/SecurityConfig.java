@@ -85,7 +85,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .requestMatchers("/ws/**").permitAll()
                 .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/articles","/api/travel","/api/travel/all","/api/place").permitAll()
+                .requestMatchers("/api/articles","/api/travel","/api/travel/all","/api/place","api/meetUpPost").permitAll()
                 .requestMatchers("/api/mission/**").permitAll()
                 .requestMatchers("/api/user/**").hasRole("USER")
                 .anyRequest().hasRole("USER")
