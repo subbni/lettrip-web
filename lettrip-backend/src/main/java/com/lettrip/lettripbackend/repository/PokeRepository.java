@@ -13,5 +13,6 @@ import java.util.Optional;
 public interface PokeRepository extends JpaRepository<Poke,Long> {
     Optional<Poke> findByUser(User user);
     Optional<Poke> findByUserAndAndMeetUpPost(User user, MeetUpPost meetUpPost);
+    Page<Poke> findAllByUser(User user, Pageable pageable);
     Page<Poke> findAllByMeetUpPost(MeetUpPost meetUpPost, Pageable pageable);
 }

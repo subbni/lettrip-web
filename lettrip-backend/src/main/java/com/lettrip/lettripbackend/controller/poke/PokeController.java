@@ -23,12 +23,20 @@ public class PokeController {
         return pokeService.savePoke(request, customUserDetails.getId());
     }
 
-    @PostMapping("/delete")
+    @DeleteMapping("/delete/{meetUpPostId}")
     public ApiResponse deletePoke(
             @CurrentUser CustomUserDetails customUserDetails,
-            @RequestBody PokeDto.Request request
+            @PathVariable("meetUpPostId") Long meetUpPostId
             ) {
-        return pokeService.deletePoke(request, customUserDetails.getId());
+        return pokeService.deletePoke(meetUpPostId, customUserDetails.getId());
+    }
+
+    @GetMapping("/check/{meetUpPostId}")
+    public ApiResponse checkPoke(
+        @CurrentUser CustomUserDetails customUserDetails,
+        @PathVariable("meetUpPostId") Long meetUpPostId
+    ) {
+        return pokeService.checkPoke(meetUpPostId, customUserDetails.getId());
     }
 
     @GetMapping("/{meetUpPostId}")
