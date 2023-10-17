@@ -2,7 +2,6 @@ package com.lettrip.lettripbackend.service;
 
 import com.lettrip.lettripbackend.controller.ApiResponse;
 import com.lettrip.lettripbackend.controller.poke.dto.PokeDto;
-import com.lettrip.lettripbackend.domain.liked.QLiked;
 import com.lettrip.lettripbackend.domain.meetup.MeetUpPost;
 import com.lettrip.lettripbackend.domain.meetup.Poke;
 import com.lettrip.lettripbackend.domain.user.User;
@@ -45,7 +44,7 @@ public class PokeService {
         User user = userService.findUserById(userId);
         MeetUpPost meetUpPost = meetUpPostService.findMeetUpPostById(meetUpPostId);
 
-        Poke poke = pokeRepository.findByUserAndAndMeetUpPost(
+        Poke poke = pokeRepository.findByUserAndMeetUpPost(
                 user, meetUpPost
         ).orElseThrow(()-> {
             throw new ResourceNotFoundException("Poke");
@@ -81,14 +80,26 @@ public class PokeService {
     }
 
     public ApiResponse checkPoke(Long meetUpPostId, Long userId) {
+        MeetUpPost meetUpPost = meetUpPostService.findMeetUpPostById(meetUpPostId);
         User user = userService.findUserById(userId);
-        Poke poke = pokeRepository.findByUser(user)
+        Poke poke = pokeRepository.findByUserAndMeetUpPost(user, meetUpPost)
+                .orElse(null);
+
+        if(isPokeExists(user,meetUpPost)) {
+            return new ApiResponse(true,"쿸찌른 게시글입니다.");
+        } else {
+            return new ApiResponse(false,"쿸찌른 적 없는 게시글입니다.");
+        }
+    }
+
+    public boolean isPokeExists(User user, MeetUpPost meetUpPost) {
+        Poke poke = pokeRepository.findByUserAndMeetUpPost(user, meetUpPost)
                 .orElse(null);
 
         if(poke == null) {
-            return new ApiResponse(false,"쿸찌른 적 없는 게시글입니다.");
+            return false;
         } else {
-            return new ApiResponse(true,"쿸찌른 게시글입니다.");
+            return true;
         }
     }
 }
