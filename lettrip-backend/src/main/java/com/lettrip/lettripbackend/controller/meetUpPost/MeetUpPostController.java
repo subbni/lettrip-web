@@ -31,6 +31,7 @@ public class MeetUpPostController {
         return meetUpPostService.showMeetUpPost(meetUpPostId);
     }
 
+    @GetMapping
     public Page<ShowMeetUpPostList.Response> showMeetUpPostPage(Pageable pageable) {
         return meetUpPostService.getAllMeetUpPostPage(pageable);
     }
