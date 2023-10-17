@@ -2,6 +2,7 @@ package com.lettrip.lettripbackend.service;
 
 import com.lettrip.lettripbackend.controller.ApiResponse;
 import com.lettrip.lettripbackend.controller.poke.dto.PokeDto;
+import com.lettrip.lettripbackend.domain.liked.QLiked;
 import com.lettrip.lettripbackend.domain.meetup.MeetUpPost;
 import com.lettrip.lettripbackend.domain.meetup.Poke;
 import com.lettrip.lettripbackend.domain.user.User;
@@ -40,9 +41,9 @@ public class PokeService {
     }
 
     @Transactional
-    public ApiResponse deletePoke(PokeDto.Request request, Long userId) {
+    public ApiResponse deletePoke(Long meetUpPostId, Long userId) {
         User user = userService.findUserById(userId);
-        MeetUpPost meetUpPost = meetUpPostService.findMeetUpPostById(request.getMeetUpPostId());
+        MeetUpPost meetUpPost = meetUpPostService.findMeetUpPostById(meetUpPostId);
 
         Poke poke = pokeRepository.findByUserAndAndMeetUpPost(
                 user, meetUpPost
@@ -63,9 +64,31 @@ public class PokeService {
         );
     }
 
+    public Page<PokeDto.Response> getAllPokesInUser(Long userId, Pageable pageable) {
+        User user = userService.findUserById(userId);
+        Page<Poke> page = pokeRepository.findAllByUser(user, pageable);
+        return new PageImpl<>(
+                pokeToDto(page.getContent()),
+                pageable,
+                page.getTotalElements()
+        );
+    }
+
     private List<PokeDto.Response> pokeToDto(List<Poke> pokeList) {
         return pokeList.stream()
                 .map(PokeDto.Response::fromEntity)
                 .collect(Collectors.toList());
+    }
+
+    public ApiResponse checkPoke(Long meetUpPostId, Long userId) {
+        User user = userService.findUserById(userId);
+        Poke poke = pokeRepository.findByUser(user)
+                .orElse(null);
+
+        if(poke == null) {
+            return new ApiResponse(false,"쿸찌른 적 없는 게시글입니다.");
+        } else {
+            return new ApiResponse(true,"쿸찌른 게시글입니다.");
+        }
     }
 }
