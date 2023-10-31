@@ -2,9 +2,6 @@ package com.lettrip.lettripbackend.service;
 
 import com.lettrip.lettripbackend.domain.ImageFile;
 import com.lettrip.lettripbackend.domain.travel.Review;
-import com.lettrip.lettripbackend.domain.travel.Travel;
-import com.lettrip.lettripbackend.exception.LettripErrorCode;
-import com.lettrip.lettripbackend.exception.LettripException;
 import com.lettrip.lettripbackend.exception.ResourceNotFoundException;
 import com.lettrip.lettripbackend.repository.ImageFileRepository;
 import com.lettrip.lettripbackend.util.S3Util;
@@ -15,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -38,9 +34,10 @@ public class FileService {
         imageFileRepository.saveAll(imageFiles);
     }
 
-    public String uploadProfileImageFile(MultipartFile multipartFile) {
+    @Transactional
+    public String uploadImageFile(MultipartFile multipartFile, String path) {
         ImageFile imageFile =
-                s3Util.uploadFile(multipartFile,"profile/");
+                s3Util.uploadFile(multipartFile,path);
         return imageFile.getStoredFileUrl();
     }
 

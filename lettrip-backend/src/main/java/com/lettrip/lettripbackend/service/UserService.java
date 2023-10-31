@@ -51,7 +51,7 @@ public class UserService {
     @Transactional
     public ApiResponse updateImageUrl(Long userId, MultipartFile multipartFile) {
         User user = findUserById(userId);
-        user.setImageUrl(fileService.uploadProfileImageFile(multipartFile));
+        user.setImageUrl(fileService.uploadImageFile(multipartFile,"profile/"));
         userRepository.save(user);
         return new ApiResponse(true,"프로필 사진 변경이 완료되었습니다.");
     }
