@@ -1,6 +1,7 @@
 package com.lettrip.lettripbackend.controller.chat;
 
 import com.lettrip.lettripbackend.controller.chat.dto.ChatDto;
+import com.lettrip.lettripbackend.mongo.domain.Chat;
 import com.lettrip.lettripbackend.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -25,4 +26,5 @@ public class WebSocketController {
         // /sub/chat/{roomId} 채널을 구독 중인 클라이언트에게 메시지를 전송
         // 메시지의 payload는 인자(chatDto)로 들어옴
     }
+
 }
