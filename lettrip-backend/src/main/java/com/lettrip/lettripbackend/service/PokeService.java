@@ -47,7 +47,7 @@ public class PokeService {
         Poke poke = pokeRepository.findByUserAndMeetUpPost(
                 user, meetUpPost
         ).orElseThrow(()-> {
-            throw new ResourceNotFoundException("Poke");
+            throw new ResourceNotFoundException("존재하지 않는 Poke입니다.");
         });
         pokeRepository.delete(poke);
         return new ApiResponse(true,"찌르기 요청이 취소되었습니다.");

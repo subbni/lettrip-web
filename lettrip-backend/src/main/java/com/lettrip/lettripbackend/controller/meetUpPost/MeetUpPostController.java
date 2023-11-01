@@ -13,7 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
-@RequestMapping("api/meetUpPost")
+@RequestMapping("/api/meetUpPost")
 @RestController
 public class MeetUpPostController {
     private final MeetUpPostService meetUpPostService;
