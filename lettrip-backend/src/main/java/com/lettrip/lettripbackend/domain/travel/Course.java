@@ -26,7 +26,7 @@ public class Course {
     @JoinColumn(name="PLACE_ID")
     private Place place;
 
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.ALL, CascadeType.REMOVE})
     @JoinColumn(name="REVIEW_ID", referencedColumnName = "REVIEW_ID")
     private Review review;
     private long cost;

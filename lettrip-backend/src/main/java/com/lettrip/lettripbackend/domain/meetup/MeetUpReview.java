@@ -23,6 +23,7 @@ public class MeetUpReview {
     private long id;
 
     @OneToOne
+    @JoinColumn(name="MEET_UP_ID")
     private MeetUp meetUp;
 
     private MeetUpStatus meetUpStatus;

@@ -27,7 +27,8 @@ public class MeetUp {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.ALL, CascadeType.REMOVE})
+    @JoinColumn(name="MEET_UP_POST_ID")
     private MeetUpPost meetUpPost;
 
     @ManyToOne

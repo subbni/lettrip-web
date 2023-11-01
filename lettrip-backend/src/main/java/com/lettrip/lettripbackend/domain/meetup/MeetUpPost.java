@@ -28,7 +28,11 @@ public class MeetUpPost extends BaseTimeEntity {
     @JoinColumn(name="USER_ID")
     private User user;
 
-    @Column(name="is_gps_enbaled")
+    @OneToOne
+    @JoinColumn(name="MEET_UP_ID")
+    private MeetUp meetUp;
+
+    @Column(name="is_gps_enabled")
     private boolean isGPSEnabled;
     private LocalDateTime meetUpDate;
 
