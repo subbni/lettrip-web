@@ -31,9 +31,32 @@ public class MeetUpPostController {
         return meetUpPostService.showMeetUpPost(meetUpPostId);
     }
 
+//    @GetMapping
+//    public Page<ShowMeetUpPostList.Response> showMeetUpPostPage(Pageable pageable) {
+//        return meetUpPostService.getAllMeetUpPostPage(pageable);
+//    }
+
+    /*
+    전체 조회인 경우
+    province = "all"
+    city = "all"
+    isGpsEnabled 생략
+    */
     @GetMapping
-    public Page<ShowMeetUpPostList.Response> showMeetUpPostPage(Pageable pageable) {
-        return meetUpPostService.getAllMeetUpPostPage(pageable);
+    public Page<ShowMeetUpPostList.Response> showMeetUpPostPage(
+            @RequestParam("province") String province,
+            @RequestParam("city") String city,
+            @RequestParam(value = "isGpsEnabled", required = false) Boolean isGpsEnabled,
+            Pageable pageable
+    ) {
+        return meetUpPostService.getMeetUpPostPage(
+                ShowMeetUpPostList.Request.builder()
+                        .province(province)
+                        .city(city)
+                        .isGpsEnabled(isGpsEnabled)
+                        .build(),
+                pageable
+        );
     }
 
 }

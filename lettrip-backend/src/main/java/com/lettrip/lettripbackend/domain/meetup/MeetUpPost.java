@@ -2,7 +2,6 @@ package com.lettrip.lettripbackend.domain.meetup;
 
 import com.lettrip.lettripbackend.constant.MeetUpPostStatus;
 import com.lettrip.lettripbackend.constant.Province;
-import com.lettrip.lettripbackend.constant.MeetUpStatus;
 import com.lettrip.lettripbackend.constant.converter.ProvincePersistConverter;
 import com.lettrip.lettripbackend.domain.BaseTimeEntity;
 import com.lettrip.lettripbackend.domain.travel.Place;
@@ -33,7 +32,7 @@ public class MeetUpPost extends BaseTimeEntity {
     private MeetUp meetUp;
 
     @Column(name="is_gps_enabled")
-    private boolean isGPSEnabled;
+    private boolean isGpsEnabled;
     private LocalDateTime meetUpDate;
 
     @Convert(converter = ProvincePersistConverter.class)
@@ -57,7 +56,7 @@ public class MeetUpPost extends BaseTimeEntity {
     private MeetUpPostStatus meetUpPostStatus;
     @Builder
     public MeetUpPost(User user,
-                      boolean isGPSEnabled,
+                      boolean isGpsEnabled,
                       LocalDateTime meetUpDate,
                       Province province,
                       String city,
@@ -65,7 +64,7 @@ public class MeetUpPost extends BaseTimeEntity {
                       String content
                       ) {
         this.user = user;
-        this.isGPSEnabled = isGPSEnabled;
+        this.isGpsEnabled = isGpsEnabled;
         this.meetUpDate = meetUpDate;
         this.province = province;
         this.city = city;

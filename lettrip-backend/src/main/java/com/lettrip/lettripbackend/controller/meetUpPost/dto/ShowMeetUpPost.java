@@ -33,7 +33,7 @@ public class ShowMeetUpPost {
                     .userDto(
                             new UserDto.Response(meetUpPost.getUser())
                     )
-                    .isGPSEnabled(meetUpPost.isGPSEnabled())
+                    .isGPSEnabled(meetUpPost.isGpsEnabled())
                     .meetUpDate(meetUpPost.getMeetUpDate())
                     .province(meetUpPost.getProvince())
                     .city(meetUpPost.getCity())

@@ -9,10 +9,13 @@ import com.lettrip.lettripbackend.domain.meetup.MeetUpPost;
 import com.lettrip.lettripbackend.domain.user.User;
 import com.lettrip.lettripbackend.exception.ResourceNotFoundException;
 import com.lettrip.lettripbackend.repository.MeetUpPostRepository;
+import com.lettrip.lettripbackend.repository.specification.MeetUpPostSpecification;
+import com.lettrip.lettripbackend.repository.specification.TravelSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -68,6 +71,7 @@ public class MeetUpPostService {
                 });
     }
 
+    // 전체 조회
     public Page<ShowMeetUpPostList.Response> getAllMeetUpPostPage(Pageable pageable) {
         Page<MeetUpPost> page = meetUpPostRepository.findAll(pageable);
         return new PageImpl<ShowMeetUpPostList.Response>(
@@ -76,6 +80,17 @@ public class MeetUpPostService {
                 page.getTotalElements()
         );
     }
+
+    // 필터링 조회 + 전체 조회
+    public Page<ShowMeetUpPostList.Response> getMeetUpPostPage(ShowMeetUpPostList.Request request, Pageable pageable) {
+        Page<MeetUpPost> page = meetUpPostRepository.findAll(getMeetUpPostPageSpec(request), pageable);
+        return new PageImpl<ShowMeetUpPostList.Response>(
+                meetUpPostToDto(page.getContent()),
+                pageable,
+                page.getTotalElements()
+        );
+    }
+
 
     private List<ShowMeetUpPostList.Response> meetUpPostToDto(List<MeetUpPost> meetUpPostList) {
         return meetUpPostList.stream()
@@ -86,6 +101,24 @@ public class MeetUpPostService {
         if(meetUpPost.getUser().getId()!= userId) {
             throw new SecurityException("작성자만 가능한 작업입니다.");
         }
+    }
+
+    private Specification<MeetUpPost> getMeetUpPostPageSpec(ShowMeetUpPostList.Request request) {
+        Specification<MeetUpPost> spec = null;
+
+        if(request.getIsGpsEnabled()!=null) {
+            spec = Specification.where(MeetUpPostSpecification.equalIsGpsEnabled(request.getIsGpsEnabled()));
+        } else {
+            spec = Specification.where(MeetUpPostSpecification.getAll());
+        }
+        if(!request.getProvince().equals("all")) {
+            spec = spec.and(MeetUpPostSpecification.equalProvince((Province.of(request.getProvince()))));
+        }
+        if(!request.getCity().equals("all")) {
+            spec = spec.and(MeetUpPostSpecification.equalCity(request.getCity()));
+        }
+
+        return spec;
     }
 
 }
