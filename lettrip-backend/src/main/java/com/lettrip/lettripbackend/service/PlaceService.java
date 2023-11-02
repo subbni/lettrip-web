@@ -70,6 +70,12 @@ public class PlaceService {
         );
     }
 
+    public PlaceDto.Response getPlaceById(Long placeId) {
+        return new PlaceDto.Response(
+                findById(placeId)
+        );
+    }
+
     public Point getFormatLocationPoint(String xpoint, String ypoint)  {
         try {
             String pointWKT = String.format("POINT(%s %s)", xpoint, ypoint);

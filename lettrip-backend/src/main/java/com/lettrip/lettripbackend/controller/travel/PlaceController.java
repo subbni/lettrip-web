@@ -25,10 +25,17 @@ public class PlaceController {
     }
 
     @GetMapping
-    public PlaceDto.Response showPlace(
+    public PlaceDto.Response showPlaceByLocationPoint(
             @RequestParam String xpoint,
             @RequestParam String ypoint
     ) {
         return placeService.getPlaceByLocationPoint(xpoint,ypoint);
+    }
+
+    @GetMapping("/{placeId}")
+    public PlaceDto.Response showPlaceById(
+            @PathVariable("placeId") Long placeId
+    ) {
+        return placeService.getPlaceById(placeId);
     }
 }
