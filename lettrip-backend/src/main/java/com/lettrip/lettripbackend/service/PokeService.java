@@ -27,13 +27,12 @@ public class PokeService {
     @Transactional
     public ApiResponse savePoke(PokeDto.Request request, Long userId) {
         User user = userService.findUserById(userId);
-        if(!checkPoke(request.getMeetUpPostId(),userId).isSuccess()) {
+        MeetUpPost meetUpPost = meetUpPostService.findMeetUpPostById(request.getMeetUpPostId());
+        if(!hasPoke(user,meetUpPost)) {
             pokeRepository.save(
                     Poke.builder()
                             .user(user)
-                            .meetUpPost(
-                                    meetUpPostService.findMeetUpPostById(request.getMeetUpPostId())
-                            )
+                            .meetUpPost(meetUpPost)
                             .briefMessage(request.getBriefMessage())
                             .build()
             );
@@ -88,14 +87,14 @@ public class PokeService {
         Poke poke = pokeRepository.findByUserAndMeetUpPost(user, meetUpPost)
                 .orElse(null);
 
-        if(isPokeExists(user,meetUpPost)) {
+        if(hasPoke(user,meetUpPost)) {
             return new ApiResponse(true,"쿸찌른 게시글입니다.");
         } else {
             return new ApiResponse(false,"쿸찌른 적 없는 게시글입니다.");
         }
     }
 
-    public boolean isPokeExists(User user, MeetUpPost meetUpPost) {
+    public boolean hasPoke(User user, MeetUpPost meetUpPost) {
         Poke poke = pokeRepository.findByUserAndMeetUpPost(user, meetUpPost)
                 .orElse(null);
 
