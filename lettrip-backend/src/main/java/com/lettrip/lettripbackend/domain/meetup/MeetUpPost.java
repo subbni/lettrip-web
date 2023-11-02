@@ -61,7 +61,9 @@ public class MeetUpPost extends BaseTimeEntity {
                       Province province,
                       String city,
                       String title,
-                      String content
+                      String content,
+                      Place place,
+                      Travel travel
                       ) {
         this.user = user;
         this.isGpsEnabled = isGpsEnabled;
@@ -70,6 +72,28 @@ public class MeetUpPost extends BaseTimeEntity {
         this.city = city;
         this.title = title;
         this.content = content;
+        this.place = place;
+        this.travel = travel;
         this.meetUpPostStatus = MeetUpPostStatus.UNSCHEDULED;
+    }
+
+    public MeetUpPost update(boolean isGpsEnabled,
+                  LocalDateTime meetUpDate,
+                  String title,
+                  String content,
+                  Place place,
+                  Travel travel) {
+        this.isGpsEnabled = isGpsEnabled;
+        this.meetUpDate = meetUpDate;
+        this.title = title;
+        this.content = content;
+        this.place = place;
+        this.travel = travel;
+        return this;
+    }
+
+    public MeetUpPost setMeetUp(MeetUp meetUp) {
+        this.meetUp = meetUp;
+        return this;
     }
 }

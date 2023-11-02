@@ -2,6 +2,7 @@ package com.lettrip.lettripbackend.controller.meetUpPost;
 
 import com.lettrip.lettripbackend.controller.ApiResponse;
 import com.lettrip.lettripbackend.controller.meetUpPost.dto.CreateMeetUpPost;
+import com.lettrip.lettripbackend.controller.meetUpPost.dto.ModifyMeetUpPost;
 import com.lettrip.lettripbackend.controller.meetUpPost.dto.ShowMeetUpPost;
 import com.lettrip.lettripbackend.controller.meetUpPost.dto.ShowMeetUpPostList;
 import com.lettrip.lettripbackend.security.CurrentUser;
@@ -57,6 +58,14 @@ public class MeetUpPostController {
                         .build(),
                 pageable
         );
+    }
+
+    @PutMapping("/modify")
+    public ApiResponse modifyMeetUpPost(
+            @CurrentUser CustomUserDetails customUserDetails,
+            @RequestBody ModifyMeetUpPost.Request request
+            ) {
+        return meetUpPostService.updateMeetUpPost(request,customUserDetails.getId());
     }
 
 }

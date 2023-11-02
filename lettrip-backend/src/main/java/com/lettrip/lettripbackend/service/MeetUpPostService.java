@@ -3,6 +3,7 @@ package com.lettrip.lettripbackend.service;
 import com.lettrip.lettripbackend.constant.Province;
 import com.lettrip.lettripbackend.controller.ApiResponse;
 import com.lettrip.lettripbackend.controller.meetUpPost.dto.CreateMeetUpPost;
+import com.lettrip.lettripbackend.controller.meetUpPost.dto.ModifyMeetUpPost;
 import com.lettrip.lettripbackend.controller.meetUpPost.dto.ShowMeetUpPost;
 import com.lettrip.lettripbackend.controller.meetUpPost.dto.ShowMeetUpPostList;
 import com.lettrip.lettripbackend.domain.meetup.MeetUpPost;
@@ -26,6 +27,8 @@ import java.util.stream.Collectors;
 @Service
 public class MeetUpPostService {
     private final UserService userService;
+    private final PlaceService placeService;
+    private final TravelService travelService;
     private final MeetUpPostRepository meetUpPostRepository;
 
     @Transactional
@@ -45,6 +48,8 @@ public class MeetUpPostService {
                         )
                         .title(request.getTitle())
                         .content(request.getContent())
+                        .place(request.getPlaceId() == null? null : placeService.findById(request.getPlaceId()))
+                        .travel(request.getTravelId() == null? null : travelService.findTravelById(request.getTravelId()))
                         .build()
         );
         return new ApiResponse(true,"등록이 완료되었습니다.",meetUpPost.getId());
@@ -58,6 +63,22 @@ public class MeetUpPostService {
         return new ApiResponse(true,"삭제가 완료되었습니다.");
     }
 
+    public ApiResponse updateMeetUpPost(ModifyMeetUpPost.Request request, Long userId) {
+        MeetUpPost meetUpPost = findMeetUpPostById(request.getId());
+        checkIfWriter(meetUpPost,userId);
+        meetUpPostRepository.save(
+                meetUpPost.update(
+                        request.getIsGpsEnabled(),
+                        request.getMeetUpDate(),
+                        request.getTitle(),
+                        request.getContent(),
+                        request.getPlaceId() == null? null : placeService.findById(request.getPlaceId()),
+                        request.getTravelId() == null? null : travelService.findTravelById(request.getTravelId())
+                )
+        );
+
+        return new ApiResponse(true,"수정 완료되었습니다.");
+    }
     public ShowMeetUpPost.Response showMeetUpPost(Long meetUpPostId) {
         return ShowMeetUpPost.Response.fromEntity(
                 findMeetUpPostById(meetUpPostId)
@@ -97,7 +118,8 @@ public class MeetUpPostService {
                 .map(ShowMeetUpPostList.Response::fromEntity)
                 .collect(Collectors.toList());
     }
-    private void checkIfWriter(MeetUpPost meetUpPost, Long userId) {
+
+    public static void checkIfWriter(MeetUpPost meetUpPost, Long userId) {
         if(meetUpPost.getUser().getId()!= userId) {
             throw new SecurityException("작성자만 가능한 작업입니다.");
         }
