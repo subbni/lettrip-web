@@ -15,6 +15,7 @@ public class UserProfileDto {
     public static class Response {
         Long id;
         String nickname;
+        String email;
         String imageUrl;
         Sex sex;
         LocalDate birthDate;
@@ -22,6 +23,7 @@ public class UserProfileDto {
         public Response(User user) {
             this.id = user.getId();
             this.nickname = user.getNickname();
+            this.email = user.getEmail();
             this.imageUrl = user.getImageUrl();
             this.sex = user.getSex();
             this.birthDate = user.getBirthDate();
