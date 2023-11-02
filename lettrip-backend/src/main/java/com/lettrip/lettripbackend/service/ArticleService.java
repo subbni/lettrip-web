@@ -67,6 +67,7 @@ public class ArticleService {
     public ApiResponse deleteArticle(Long articleId, Long userId) {
         Article article = findArticleById(articleId);
         checkIfWriter(article, userId);
+        likedService.deleteLiked(userId, LikedType.ARTICLE_LIKE, articleId);
         articleRepository.delete(article);
         return new ApiResponse(true,"해당 게시글이 삭제되었습니다.");
     }
