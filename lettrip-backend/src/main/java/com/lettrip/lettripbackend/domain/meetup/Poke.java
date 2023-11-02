@@ -24,7 +24,7 @@ public class Poke {
     private long id;
 
     @ManyToOne
-    @JoinColumn(name="MEEP_UP_POST_ID")
+    @JoinColumn(name="MEET_UP_POST_ID")
     private MeetUpPost meetUpPost;
 
     @ManyToOne

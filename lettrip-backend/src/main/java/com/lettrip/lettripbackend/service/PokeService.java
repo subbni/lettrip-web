@@ -27,15 +27,18 @@ public class PokeService {
     @Transactional
     public ApiResponse savePoke(PokeDto.Request request, Long userId) {
         User user = userService.findUserById(userId);
-        pokeRepository.save(
-                Poke.builder()
-                        .user(user)
-                        .meetUpPost(
-                                meetUpPostService.findMeetUpPostById(request.getMeetUpPostId())
-                        )
-                        .briefMessage(request.getBriefMessage())
-                        .build()
-        );
+        if(!checkPoke(request.getMeetUpPostId(),userId).isSuccess()) {
+            pokeRepository.save(
+                    Poke.builder()
+                            .user(user)
+                            .meetUpPost(
+                                    meetUpPostService.findMeetUpPostById(request.getMeetUpPostId())
+                            )
+                            .briefMessage(request.getBriefMessage())
+                            .build()
+            );
+        }
+
         return new ApiResponse(true,"찌르기 요청이 완료되었습니다.");
     }
 
