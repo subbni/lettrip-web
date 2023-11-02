@@ -38,7 +38,6 @@ public class MeetUp {
     @JoinColumn(name="REQUEST_USER_ID")
     private User requestUser;
     private LocalDate meetUpDate;
-
     @Enumerated(EnumType.STRING)
     private MeetUpStatus meetUpStatus;
 
