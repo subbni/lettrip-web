@@ -12,6 +12,7 @@ import com.lettrip.lettripbackend.domain.user.User;
 import com.lettrip.lettripbackend.exception.LettripErrorCode;
 import com.lettrip.lettripbackend.exception.LettripException;
 import com.lettrip.lettripbackend.exception.ResourceNotFoundException;
+import com.lettrip.lettripbackend.mongo.domain.ChatRoom;
 import com.lettrip.lettripbackend.mongo.domain.MeetUpCode;
 import com.lettrip.lettripbackend.mongo.repository.MeetUpCodeRepository;
 import com.lettrip.lettripbackend.repository.MeetUpRepository;
@@ -25,6 +26,7 @@ public class MeetUpService {
     private final UserService userService;
     private final MeetUpPostService meetUpPostService;
     private final PokeService pokeService;
+    private final ChatRoomService chatRoomService;
     private final MeetUpRepository meetUpRepository;
     private final MeetUpCodeRepository meetUpCodeRepository;
 
@@ -53,6 +55,10 @@ public class MeetUpService {
         meetUpPost.setMeetUpPostStatus(MeetUpPostStatus.SCHEDULED);
         // 4. 관련된 Poke 상태 변경
         pokeService.updatePokeStatusOnMeetUpCreation(meetUp);
+        // 5. 채팅방 관련 처리
+        ChatRoom chatRoom = chatRoomService.findChatRoomById(request.getRoomId());
+        chatRoom.setMeetUpId(meetUp.getId());
+
         return new ApiResponse(true, "약속이 생성되었습니다.");
     }
 
@@ -67,6 +73,7 @@ public class MeetUpService {
         return new ApiResponse(true,"약속이 취소되었습니다.");
     }
 
+    @Transactional
     public ApiResponse sendMeetUpCode(Long meetUpId, Long userId) {
         User user = userService.findUserById(userId);
         MeetUp meetUp = findMeetUpById(meetUpId);
@@ -77,9 +84,9 @@ public class MeetUpService {
             throw new LettripException(LettripErrorCode.CANNOT_BE_CREATED_MULTIPLE_TIMES,"더 이상 약속을 생성할 수 없습니다.");
         }
         if(hasMeetUpCode(meetUp)) {
-            return new ApiResponse(true,"인증코드 입니다.", findMeetUpCodeByMeetUpId(meetUp.getId()).getCode());
+            return new ApiResponse(true,"인증코드입니다.", findMeetUpCodeByMeetUpId(meetUp.getId()).getCode());
         } else {
-            return new ApiResponse(true,"인증코드가 생성되었습니다..",createMeetUpCode(user,meetUp));
+            return new ApiResponse(true,"인증코드가 생성되었습니다.",createMeetUpCode(user,meetUp));
         }
     }
 

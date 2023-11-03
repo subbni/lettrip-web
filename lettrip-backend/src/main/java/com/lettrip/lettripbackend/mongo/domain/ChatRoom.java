@@ -56,4 +56,8 @@ public class ChatRoom {
         this.lastMessage = lastMessage;
         this.lastMessageTime = lastMessageTime;
     }
+
+    public void setMeetUpId(Long meetUpId) {
+        this.meetUpId = meetUpId;
+    }
 }

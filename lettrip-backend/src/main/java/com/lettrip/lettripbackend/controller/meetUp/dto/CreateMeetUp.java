@@ -12,6 +12,7 @@ public class CreateMeetUp {
     @NoArgsConstructor
     @Builder
     public static class Request {
+        String roomId;
         Long meetUpPostId;
         Long participantId;
         @JsonFormat(shape = JsonFormat.Shape.STRING,
