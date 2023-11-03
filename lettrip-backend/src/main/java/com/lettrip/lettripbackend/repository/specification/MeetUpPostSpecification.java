@@ -1,5 +1,6 @@
 package com.lettrip.lettripbackend.repository.specification;
 
+import com.lettrip.lettripbackend.constant.MeetUpPostStatus;
 import com.lettrip.lettripbackend.constant.Province;
 import com.lettrip.lettripbackend.domain.meetup.MeetUpPost;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -34,6 +35,16 @@ public class MeetUpPostSpecification {
             }
         };
     }
+
+    public static Specification<MeetUpPost> equalMeetUpPostStatus(MeetUpPostStatus meetUpPostStatus) {
+        return new Specification<MeetUpPost>() {
+            @Override
+            public Predicate toPredicate(Root<MeetUpPost> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                return criteriaBuilder.equal(root.get("meetUpPostStatus"),meetUpPostStatus);
+            }
+        };
+    }
+
 
     public static Specification<MeetUpPost> equalIsGpsEnabled(Boolean isGpsEnabled) {
         return new Specification<MeetUpPost>() {

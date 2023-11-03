@@ -42,6 +42,7 @@ public class MeetUpPostController {
     public Page<ShowMeetUpPostList.Response> showMeetUpPostPage(
             @RequestParam("province") String province,
             @RequestParam("city") String city,
+            @RequestParam(value = "meetUpPostStatus", required = false) String meetUpPostStatus,
             @RequestParam(value = "isGpsEnabled", required = false) Boolean isGpsEnabled,
             Pageable pageable
     ) {
