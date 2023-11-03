@@ -43,4 +43,9 @@ public class Poke {
         this.briefMessage = briefMessage;
         this.pokeStatus = PokeStatus.NOT_YET;
     }
+
+    public Poke setPokeStatus(PokeStatus pokeStatus) {
+        this.pokeStatus = pokeStatus;
+        return this;
+    }
 }

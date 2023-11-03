@@ -1,5 +1,6 @@
 package com.lettrip.lettripbackend.controller.meetUpPost.dto;
 
+import com.lettrip.lettripbackend.constant.MeetUpPostStatus;
 import com.lettrip.lettripbackend.constant.Province;
 import com.lettrip.lettripbackend.controller.user.dto.UserDto;
 import com.lettrip.lettripbackend.domain.meetup.MeetUpPost;
@@ -33,6 +34,7 @@ public class ShowMeetUpPostList {
         String city;
         String title;
         LocalDateTime createdDate;
+        MeetUpPostStatus meetUpPostStatus;
 
         public static ShowMeetUpPostList.Response fromEntity(MeetUpPost meetUpPost) {
             return ShowMeetUpPostList.Response.builder()
@@ -46,6 +48,7 @@ public class ShowMeetUpPostList {
                     .city(meetUpPost.getCity())
                     .title(meetUpPost.getTitle())
                     .createdDate(meetUpPost.getCreatedDate())
+                    .meetUpPostStatus(meetUpPost.getMeetUpPostStatus())
                     .build();
         }
     }

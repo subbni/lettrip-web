@@ -50,4 +50,8 @@ public class MeetUp {
         this.meetUpStatus = MeetUpStatus.PENDING;
     }
 
+    public MeetUp setMeetUpStatus(MeetUpStatus meetUpStatus) {
+        this.meetUpStatus = meetUpStatus;
+        return this;
+    }
 }
