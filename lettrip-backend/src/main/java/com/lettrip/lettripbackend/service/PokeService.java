@@ -1,7 +1,9 @@
 package com.lettrip.lettripbackend.service;
 
+import com.lettrip.lettripbackend.constant.PokeStatus;
 import com.lettrip.lettripbackend.controller.ApiResponse;
 import com.lettrip.lettripbackend.controller.poke.dto.PokeDto;
+import com.lettrip.lettripbackend.domain.meetup.MeetUp;
 import com.lettrip.lettripbackend.domain.meetup.MeetUpPost;
 import com.lettrip.lettripbackend.domain.meetup.Poke;
 import com.lettrip.lettripbackend.domain.user.User;
@@ -81,6 +83,19 @@ public class PokeService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    public void updatePokeStatusOnMeetUpCreation(MeetUp meetUp) {
+        List<Poke> pokeList = pokeRepository.findAllByMeetUpPost(meetUp.getMeetUpPost());
+        pokeList.stream()
+                .map((poke)-> {
+                    if(poke.getUser() != meetUp.getRequestUser()) {
+                        return poke.setPokeStatus(PokeStatus.NOT_SELECTED);
+                    }else {
+                        return poke.setPokeStatus(PokeStatus.SELECTED);
+                    }
+                }).collect(Collectors.toList());
+    }
+
     public ApiResponse checkPoke(Long meetUpPostId, Long userId) {
         MeetUpPost meetUpPost = meetUpPostService.findMeetUpPostById(meetUpPostId);
         User user = userService.findUserById(userId);
@@ -98,10 +113,6 @@ public class PokeService {
         Poke poke = pokeRepository.findByUserAndMeetUpPost(user, meetUpPost)
                 .orElse(null);
 
-        if(poke == null) {
-            return false;
-        } else {
-            return true;
-        }
+        return poke != null;
     }
 }

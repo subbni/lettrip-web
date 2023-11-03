@@ -2,14 +2,12 @@ package com.lettrip.lettripbackend.controller.meetUp;
 
 import com.lettrip.lettripbackend.controller.ApiResponse;
 import com.lettrip.lettripbackend.controller.meetUp.dto.CreateMeetUp;
+import com.lettrip.lettripbackend.controller.meetUp.dto.VerifyMeetUpCode;
 import com.lettrip.lettripbackend.security.CurrentUser;
 import com.lettrip.lettripbackend.security.CustomUserDetails;
 import com.lettrip.lettripbackend.service.MeetUpService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/meetUp")
@@ -23,5 +21,31 @@ public class MeetUpController {
             @RequestBody CreateMeetUp.Request request
             ) {
         return meetUpService.saveMeetUp(request,customUserDetails.getId());
+    }
+
+    @GetMapping("/cancel/{meetUpId}")
+    public ApiResponse cancelMeetUp(
+            @CurrentUser CustomUserDetails customUserDetails,
+            @PathVariable Long meetUpId
+    ) {
+        return meetUpService.cancelMeetUp(meetUpId,customUserDetails.getId());
+    }
+
+    // 인증코드 요청
+    @GetMapping("/meetUp-code/{meetUpId}")
+    public ApiResponse sendCode(
+            @CurrentUser CustomUserDetails customUserDetails,
+            @PathVariable Long meetUpId
+    ) {
+        return meetUpService.sendMeetUpCode(meetUpId,customUserDetails.getId());
+    }
+
+    // 인증 요청
+    @PostMapping("/meetUp-verify")
+    public ApiResponse sendCode(
+            @CurrentUser CustomUserDetails customUserDetails,
+            @RequestBody VerifyMeetUpCode.Request request
+            ) {
+        return meetUpService.verifyMeetUpCode(request,customUserDetails.getId());
     }
 }

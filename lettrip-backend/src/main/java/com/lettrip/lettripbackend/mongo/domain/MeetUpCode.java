@@ -27,7 +27,7 @@ public class MeetUpCode {
 
     private String code;
     @Field(name="expiration")
-    @Indexed(expireAfterSeconds = 120) // 2분 후에 삭제
+    @Indexed(expireAfterSeconds = 120) // 2분
     private Date expiration;
     @Builder
     public MeetUpCode(
