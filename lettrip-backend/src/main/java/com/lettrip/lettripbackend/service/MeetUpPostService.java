@@ -1,5 +1,6 @@
 package com.lettrip.lettripbackend.service;
 
+import com.lettrip.lettripbackend.constant.MeetUpPostStatus;
 import com.lettrip.lettripbackend.constant.Province;
 import com.lettrip.lettripbackend.controller.ApiResponse;
 import com.lettrip.lettripbackend.controller.meetUpPost.dto.CreateMeetUpPost;
@@ -132,6 +133,11 @@ public class MeetUpPostService {
             spec = Specification.where(MeetUpPostSpecification.equalIsGpsEnabled(request.getIsGpsEnabled()));
         } else {
             spec = Specification.where(MeetUpPostSpecification.getAll());
+        }
+        if(request.getMeetUpPostStatus()!=null) {
+            spec = Specification.where(
+                    MeetUpPostSpecification.equalMeetUpPostStatus(MeetUpPostStatus.valueOf(request.getMeetUpPostStatus()))
+            );
         }
         if(!request.getProvince().equals("all")) {
             spec = spec.and(MeetUpPostSpecification.equalProvince((Province.of(request.getProvince()))));

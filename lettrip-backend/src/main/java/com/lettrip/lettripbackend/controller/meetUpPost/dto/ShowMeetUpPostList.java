@@ -17,6 +17,7 @@ public class ShowMeetUpPostList {
     public static class Request {
         String province;
         String city;
+        String meetUpPostStatus;
         Boolean isGpsEnabled;
 
     }
