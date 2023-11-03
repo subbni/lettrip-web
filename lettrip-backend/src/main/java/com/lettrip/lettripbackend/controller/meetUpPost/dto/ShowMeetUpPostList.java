@@ -13,10 +13,21 @@ public class ShowMeetUpPostList {
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
+    public static class Request {
+        String province;
+        String city;
+        Boolean isGpsEnabled;
+
+    }
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
     public static class Response {
         Long id;
         UserDto.Response userDto;
-        Boolean isGPSEnabled;
+        Boolean isGpsEnabled;
         LocalDateTime meetUpDate;
         Province province;
         String city;
@@ -29,7 +40,7 @@ public class ShowMeetUpPostList {
                     .userDto(
                             new UserDto.Response(meetUpPost.getUser())
                     )
-                    .isGPSEnabled(meetUpPost.isGPSEnabled())
+                    .isGpsEnabled(meetUpPost.isGpsEnabled())
                     .meetUpDate(meetUpPost.getMeetUpDate())
                     .province(meetUpPost.getProvince())
                     .city(meetUpPost.getCity())

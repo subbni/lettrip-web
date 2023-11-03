@@ -2,6 +2,7 @@ package com.lettrip.lettripbackend.controller.meetUpPost;
 
 import com.lettrip.lettripbackend.controller.ApiResponse;
 import com.lettrip.lettripbackend.controller.meetUpPost.dto.CreateMeetUpPost;
+import com.lettrip.lettripbackend.controller.meetUpPost.dto.ModifyMeetUpPost;
 import com.lettrip.lettripbackend.controller.meetUpPost.dto.ShowMeetUpPost;
 import com.lettrip.lettripbackend.controller.meetUpPost.dto.ShowMeetUpPostList;
 import com.lettrip.lettripbackend.security.CurrentUser;
@@ -31,9 +32,40 @@ public class MeetUpPostController {
         return meetUpPostService.showMeetUpPost(meetUpPostId);
     }
 
+//    @GetMapping
+//    public Page<ShowMeetUpPostList.Response> showMeetUpPostPage(Pageable pageable) {
+//        return meetUpPostService.getAllMeetUpPostPage(pageable);
+//    }
+
+    /*
+    전체 조회인 경우
+    province = "all"
+    city = "all"
+    isGpsEnabled 생략
+    */
     @GetMapping
-    public Page<ShowMeetUpPostList.Response> showMeetUpPostPage(Pageable pageable) {
-        return meetUpPostService.getAllMeetUpPostPage(pageable);
+    public Page<ShowMeetUpPostList.Response> showMeetUpPostPage(
+            @RequestParam("province") String province,
+            @RequestParam("city") String city,
+            @RequestParam(value = "isGpsEnabled", required = false) Boolean isGpsEnabled,
+            Pageable pageable
+    ) {
+        return meetUpPostService.getMeetUpPostPage(
+                ShowMeetUpPostList.Request.builder()
+                        .province(province)
+                        .city(city)
+                        .isGpsEnabled(isGpsEnabled)
+                        .build(),
+                pageable
+        );
+    }
+
+    @PutMapping("/modify")
+    public ApiResponse modifyMeetUpPost(
+            @CurrentUser CustomUserDetails customUserDetails,
+            @RequestBody ModifyMeetUpPost.Request request
+            ) {
+        return meetUpPostService.updateMeetUpPost(request,customUserDetails.getId());
     }
 
 }

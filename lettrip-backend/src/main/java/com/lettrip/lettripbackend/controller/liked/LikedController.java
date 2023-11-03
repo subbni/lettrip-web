@@ -23,7 +23,7 @@ public class LikedController {
             @RequestParam("likedType") LikedType likedType,
             @RequestParam("targetId") Long targetId
             ) {
-        return likedService.checkIfLiked(customUserDetails.getId(), likedType, targetId);
+        return likedService.checkLiked(customUserDetails.getId(), likedType, targetId);
     }
 
     @PostMapping("/push")

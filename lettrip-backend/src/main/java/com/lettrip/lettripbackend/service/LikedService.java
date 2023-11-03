@@ -26,16 +26,17 @@ public class LikedService {
     @Transactional
     public ApiResponse saveLiked(Long userId, LikedDto.Request request) {
         User user = userService.findUserById(userId);
-        likedRepository.save(
-                Liked.builder()
-                        .user(user)
-                        .likedType(request.getLikedType())
-                        .targetId(request.getTargetId())
-                        .build()
-        );
-
-        if(request.getLikedType().equals(LikedType.ARTICLE_LIKE)) {
-            updateArticle(request.getTargetId(),1);
+        if(!hasLiked(userId,request.getLikedType(), request.getTargetId())) {
+            likedRepository.save(
+                    Liked.builder()
+                            .user(user)
+                            .likedType(request.getLikedType())
+                            .targetId(request.getTargetId())
+                            .build()
+            );
+            if(request.getLikedType().equals(LikedType.ARTICLE_LIKE)) {
+                updateArticle(request.getTargetId(),1);
+            }
         }
         return new ApiResponse(true,"좋아요 등록이 완료되었습니다.");
     }
@@ -66,7 +67,7 @@ public class LikedService {
     }
 
     // 좋아요가 등록되어있는지 확인
-    public LikedDto.Response checkIfLiked(Long userId, LikedType likedType, Long targetId) {
+    public LikedDto.Response checkLiked(Long userId, LikedType likedType, Long targetId) {
         User user = userService.findUserById(userId);
 
         Liked liked = likedRepository.findLikedByUserAndLikedTypeAndTargetId(
@@ -80,10 +81,29 @@ public class LikedService {
         }
     }
 
+    public boolean hasLiked(Long userId, LikedType likedType, Long targetId) {
+        User user = userService.findUserById(userId);
+        Liked liked = likedRepository.findLikedByUserAndLikedTypeAndTargetId(
+                user, likedType, targetId
+        ).orElse(null);
+
+        if(liked == null) {
+            return false;
+        }else {
+            return true;
+        }
+    }
+
     public List<Liked> findUserLikedList(User user, LikedType likedType) {
         return likedRepository.findAll(
                 LikedSpecification.getUserLiked(user, likedType)
         );
     }
 
+    public void deleteLiked(Long userId, LikedType likedType, Long targetId) {
+        User user = userService.findUserById(userId);
+        likedRepository.findLikedByUserAndLikedTypeAndTargetId(
+                user, likedType, targetId
+        ).ifPresent(likedRepository::delete);
+    }
 }
