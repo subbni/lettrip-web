@@ -96,4 +96,9 @@ public class MeetUpPost extends BaseTimeEntity {
         this.meetUp = meetUp;
         return this;
     }
+
+    public MeetUpPost setMeetUpPostStatus(MeetUpPostStatus meetUpPostStatus) {
+        this.meetUpPostStatus = meetUpPostStatus;
+        return this;
+    }
 }

@@ -32,11 +32,6 @@ public class MeetUpPostController {
         return meetUpPostService.showMeetUpPost(meetUpPostId);
     }
 
-//    @GetMapping
-//    public Page<ShowMeetUpPostList.Response> showMeetUpPostPage(Pageable pageable) {
-//        return meetUpPostService.getAllMeetUpPostPage(pageable);
-//    }
-
     /*
     전체 조회인 경우
     province = "all"

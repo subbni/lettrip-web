@@ -1,5 +1,6 @@
 package com.lettrip.lettripbackend.service;
 
+import com.lettrip.lettripbackend.constant.MeetUpPostStatus;
 import com.lettrip.lettripbackend.constant.MeetUpStatus;
 import com.lettrip.lettripbackend.controller.ApiResponse;
 import com.lettrip.lettripbackend.controller.meetUp.dto.CreateMeetUp;
@@ -47,8 +48,9 @@ public class MeetUpService {
                         .build()
 
         );
-        // 3. MeetUpPost에 등록
+        // 3. MeetUpPost 관련 처리
         meetUpPost.setMeetUp(meetUp);
+        meetUpPost.setMeetUpPostStatus(MeetUpPostStatus.SCHEDULED);
         // 4. 관련된 Poke 상태 변경
         pokeService.updatePokeStatusOnMeetUpCreation(meetUp);
         return new ApiResponse(true, "약속이 생성되었습니다.");

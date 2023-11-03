@@ -2,6 +2,7 @@ package com.lettrip.lettripbackend.controller.meetUp;
 
 import com.lettrip.lettripbackend.controller.ApiResponse;
 import com.lettrip.lettripbackend.controller.meetUp.dto.CreateMeetUp;
+import com.lettrip.lettripbackend.controller.meetUp.dto.MeetUpDto;
 import com.lettrip.lettripbackend.controller.meetUp.dto.VerifyMeetUpCode;
 import com.lettrip.lettripbackend.security.CurrentUser;
 import com.lettrip.lettripbackend.security.CustomUserDetails;
@@ -47,5 +48,13 @@ public class MeetUpController {
             @RequestBody VerifyMeetUpCode.Request request
             ) {
         return meetUpService.verifyMeetUpCode(request,customUserDetails.getId());
+    }
+
+    @GetMapping("/{meetUpId}")
+    public MeetUpDto.Response showMeetUp(
+            @CurrentUser CustomUserDetails customUserDetails,
+            @PathVariable Long meetUpId
+    ) {
+        return meetUpService.getMeetUpById(meetUpId,customUserDetails.getId());
     }
 }
