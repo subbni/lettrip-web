@@ -36,7 +36,7 @@ public class MeetUpPostController {
     전체 조회인 경우
     province = "all"
     city = "all"
-    isGpsEnabled 생략
+    isGpsEnabled, meetUpPostStatus 생략
     */
     @GetMapping
     public Page<ShowMeetUpPostList.Response> showMeetUpPostPage(
@@ -50,6 +50,7 @@ public class MeetUpPostController {
                 ShowMeetUpPostList.Request.builder()
                         .province(province)
                         .city(city)
+                        .meetUpPostStatus(meetUpPostStatus)
                         .isGpsEnabled(isGpsEnabled)
                         .build(),
                 pageable
