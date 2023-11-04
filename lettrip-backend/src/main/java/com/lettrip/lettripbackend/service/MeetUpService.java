@@ -32,15 +32,8 @@ public class MeetUpService {
 
     @Transactional
     public ApiResponse saveMeetUp(CreateMeetUp.Request request, Long userId) {
-        // 1. 현재 요청하는 사람이 meetUpPost 작성자인지 확인
         MeetUpPost meetUpPost = meetUpPostService.findMeetUpPostById(request.getMeetUpPostId());
-        MeetUpPostService.checkIfWriter(meetUpPost, userId);
-        // 2. 이미 MeetUp이 존재하는지 확인
-        if (hasMeetUp(meetUpPost)) {
-            throw new LettripException(LettripErrorCode.CANNOT_BE_CREATED_MULTIPLE_TIMES,
-                    "이미 생성된 약속이 존재합니다.");
-        }
-        // 3. 존재하지 않는다면, MeetUp을 새로 생성
+        checkProcessBeforeMeetUpCreation(meetUpPost,userId);
         MeetUp meetUp = meetUpRepository.save(
                 MeetUp.builder()
                         .meetUpPost(meetUpPost)
@@ -50,16 +43,29 @@ public class MeetUpService {
                         .build()
 
         );
-        // 3. MeetUpPost 관련 처리
+        processAfterMeetUpCreation(meetUp,meetUpPost,request.getRoomId());
+        return new ApiResponse(true, "약속이 생성되었습니다.");
+    }
+
+    private void checkProcessBeforeMeetUpCreation(MeetUpPost meetUpPost, Long userId) {
+        // 1. 현재 요청하는 사람이 meetUpPost 작성자인지 확인
+        MeetUpPostService.checkIfWriter(meetUpPost, userId);
+        // 2. 이미 MeetUp이 존재하는지 확인
+        if (hasMeetUp(meetUpPost)) {
+            throw new LettripException(LettripErrorCode.CANNOT_BE_CREATED_MULTIPLE_TIMES,
+                    "이미 생성된 약속이 존재합니다.");
+        }
+    }
+
+    private void processAfterMeetUpCreation(MeetUp meetUp, MeetUpPost meetUpPost,String roomId) {
+        // 1. MeetUpPost 관련 처리
         meetUpPost.setMeetUp(meetUp);
         meetUpPost.setMeetUpPostStatus(MeetUpPostStatus.SCHEDULED);
-        // 4. 관련된 Poke 상태 변경
+        // 2. 관련된 Poke 상태 변경
         pokeService.updatePokeStatusOnMeetUpCreation(meetUp);
-        // 5. 채팅방 관련 처리
-        ChatRoom chatRoom = chatRoomService.findChatRoomById(request.getRoomId());
+        // 3. 채팅방 관련 처리
+        ChatRoom chatRoom = chatRoomService.findChatRoomById(roomId);
         chatRoom.setMeetUpId(meetUp.getId());
-
-        return new ApiResponse(true, "약속이 생성되었습니다.");
     }
 
     @Transactional
@@ -122,15 +128,15 @@ public class MeetUpService {
         return new MeetUpDto.Response(meetUp);
     }
 
-    private MeetUp findMeetUpByMeetUpPost(MeetUpPost meetUpPost) {
-        return meetUpRepository.findByMeetUpPost(meetUpPost).orElse(null);
-    }
-
-    private MeetUp findMeetUpById(Long meetUpId) {
+    public MeetUp findMeetUpById(Long meetUpId) {
         return meetUpRepository.findById(meetUpId)
                 .orElseThrow(()-> {
                     throw new ResourceNotFoundException("MeetUp","meetUpId", meetUpId);
                 });
+    }
+
+    private MeetUp findMeetUpByMeetUpPost(MeetUpPost meetUpPost) {
+        return meetUpRepository.findByMeetUpPost(meetUpPost).orElse(null);
     }
 
     private MeetUpCode findMeetUpCodeByMeetUpId(Long meetUpId) {
