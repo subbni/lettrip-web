@@ -26,6 +26,7 @@ public class MeetUpReview {
     @JoinColumn(name="MEET_UP_ID")
     private MeetUp meetUp;
 
+    @Enumerated(EnumType.STRING)
     private MeetUpStatus meetUpStatus;
 
     @ManyToOne
