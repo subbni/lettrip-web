@@ -6,6 +6,7 @@ import com.lettrip.lettripbackend.domain.meetup.MeetUpPost;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 public class ShowMeetUpPost {
     @Getter
@@ -18,7 +19,7 @@ public class ShowMeetUpPost {
         UserDto.Response userDto;
         Boolean isGPSEnabled;
         LocalDateTime meetUpDate;
-        Province province;
+        String province;
         String city;
         String title;
         String content;
@@ -35,13 +36,13 @@ public class ShowMeetUpPost {
                     )
                     .isGPSEnabled(meetUpPost.isGpsEnabled())
                     .meetUpDate(meetUpPost.getMeetUpDate())
-                    .province(meetUpPost.getProvince())
+                    .province(meetUpPost.getProvince().getKoreanName())
                     .city(meetUpPost.getCity())
                     .title(meetUpPost.getTitle())
                     .content(meetUpPost.getContent())
                     .createdDate(meetUpPost.getCreatedDate())
-                    .placeId(meetUpPost.getId())
-                    .travelId(meetUpPost.getId())
+                    .placeId(meetUpPost.getPlace()==null? null:meetUpPost.getPlace().getId())
+                    .travelId(meetUpPost.getTravel()==null? null:meetUpPost.getTravel().getId())
                     .build();
         }
     }

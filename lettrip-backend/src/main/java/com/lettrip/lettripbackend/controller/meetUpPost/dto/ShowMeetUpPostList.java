@@ -31,7 +31,7 @@ public class ShowMeetUpPostList {
         UserDto.Response userDto;
         Boolean isGpsEnabled;
         LocalDateTime meetUpDate;
-        Province province;
+        String province;
         String city;
         String title;
         LocalDateTime createdDate;
@@ -45,7 +45,7 @@ public class ShowMeetUpPostList {
                     )
                     .isGpsEnabled(meetUpPost.isGpsEnabled())
                     .meetUpDate(meetUpPost.getMeetUpDate())
-                    .province(meetUpPost.getProvince())
+                    .province(meetUpPost.getProvince().getKoreanName())
                     .city(meetUpPost.getCity())
                     .title(meetUpPost.getTitle())
                     .createdDate(meetUpPost.getCreatedDate())
