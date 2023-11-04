@@ -24,8 +24,7 @@ public class ChatController {
             @CurrentUser CustomUserDetails customUserDetails,
             @RequestBody ChatRoomDto.Request request
             ) {
-        /* just for test */
-        return chatRoomService.saveChatRoom(request);
+        return chatRoomService.saveChatRoom(request,customUserDetails.getId());
     }
 
 
