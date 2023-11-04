@@ -76,23 +76,34 @@ public class MeetUpService {
             throw new LettripException(LettripErrorCode.UNAUTHORIZED_ACCESS,"당사자만 가능한 작업입니다.");
         }
         meetUpRepository.save(meetUp.setMeetUpStatus(MeetUpStatus.CANCELLED));
+        processAfterMeetUpCancel(meetUp,user);
         return new ApiResponse(true,"약속이 취소되었습니다.");
     }
 
     @Transactional
+    public void processAfterMeetUpCancel(MeetUp meetUp,User user) {
+        user.addMeetUpCancelledCount();
+        User participant = meetUp.getWriteUser().equals(user)? meetUp.getRequestUser(): meetUp.getWriteUser();
+        participant.addMeetUpCancelledCount();
+    }
+    @Transactional
     public ApiResponse sendMeetUpCode(Long meetUpId, Long userId) {
         User user = userService.findUserById(userId);
         MeetUp meetUp = findMeetUpById(meetUpId);
+
+        if(hasMeetUpCode(meetUp)) {
+            return new ApiResponse(true,"인증코드입니다.", findMeetUpCodeByMeetUpId(meetUp.getId()).getCode());
+        } else {
+            return new ApiResponse(true,"인증코드가 생성되었습니다.",createMeetUpCode(user,meetUp));
+        }
+    }
+
+    private void checkProcessBeforeMeetUpCodeCreation(User user, MeetUp meetUp) {
         if(meetUp.getWriteUser()!=user && meetUp.getRequestUser()!=user) {
             throw new LettripException(LettripErrorCode.UNAUTHORIZED_ACCESS,"당사자만 가능한 작업입니다.");
         }
         if(!meetUp.getMeetUpStatus().equals(MeetUpStatus.PENDING)) {
             throw new LettripException(LettripErrorCode.CANNOT_BE_CREATED_MULTIPLE_TIMES,"더 이상 약속을 생성할 수 없습니다.");
-        }
-        if(hasMeetUpCode(meetUp)) {
-            return new ApiResponse(true,"인증코드입니다.", findMeetUpCodeByMeetUpId(meetUp.getId()).getCode());
-        } else {
-            return new ApiResponse(true,"인증코드가 생성되었습니다.",createMeetUpCode(user,meetUp));
         }
     }
 
@@ -112,6 +123,7 @@ public class MeetUpService {
 
     @Transactional
     public ApiResponse verifyMeetUpCode(VerifyMeetUpCode.Request request, Long userId) {
+        User user = userService.findUserById(userId);
         MeetUp meetUp = findMeetUpById(request.getMeetUpId());
         MeetUpCode meetUpCode = findMeetUpCodeByMeetUpId(meetUp.getId());
         if(meetUpCode.getCode().equals(request.getCode())) {
@@ -122,6 +134,12 @@ public class MeetUpService {
         }
     }
 
+    @Transactional
+    public void processAfterMeetUpCompletion(MeetUp meetUp,User user) {
+        user.addMeetUpCompletedCount();
+        User participant = meetUp.getWriteUser().equals(user)? meetUp.getRequestUser(): meetUp.getWriteUser();
+        participant.addMeetUpCompletedCount();
+    }
     public MeetUpDto.Response getMeetUpById(Long meetUpId, Long userId) {
         User user = userService.findUserById(userId);
         MeetUp meetUp = findMeetUpById(meetUpId);
