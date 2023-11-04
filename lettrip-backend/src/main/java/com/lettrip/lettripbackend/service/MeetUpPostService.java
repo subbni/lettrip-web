@@ -7,10 +7,13 @@ import com.lettrip.lettripbackend.controller.meetUpPost.dto.CreateMeetUpPost;
 import com.lettrip.lettripbackend.controller.meetUpPost.dto.ModifyMeetUpPost;
 import com.lettrip.lettripbackend.controller.meetUpPost.dto.ShowMeetUpPost;
 import com.lettrip.lettripbackend.controller.meetUpPost.dto.ShowMeetUpPostList;
+import com.lettrip.lettripbackend.domain.meetup.MeetUp;
 import com.lettrip.lettripbackend.domain.meetup.MeetUpPost;
+import com.lettrip.lettripbackend.domain.meetup.Poke;
 import com.lettrip.lettripbackend.domain.user.User;
 import com.lettrip.lettripbackend.exception.ResourceNotFoundException;
 import com.lettrip.lettripbackend.repository.MeetUpPostRepository;
+import com.lettrip.lettripbackend.repository.PokeRepository;
 import com.lettrip.lettripbackend.repository.specification.MeetUpPostSpecification;
 import com.lettrip.lettripbackend.repository.specification.TravelSpecification;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +33,7 @@ public class MeetUpPostService {
     private final UserService userService;
     private final PlaceService placeService;
     private final TravelService travelService;
+    private final PokeRepository pokeRepository;
     private final MeetUpPostRepository meetUpPostRepository;
 
     @Transactional
@@ -60,6 +64,7 @@ public class MeetUpPostService {
     public ApiResponse deleteMeetUpPost(Long meetUpPostId, Long userId) {
         MeetUpPost meetUpPost = findMeetUpPostById(meetUpPostId);
         checkIfWriter(meetUpPost, userId);
+        // TODO: 삭제에 관련된 처리 필요
         meetUpPostRepository.delete(meetUpPost);
         return new ApiResponse(true,"삭제가 완료되었습니다.");
     }
@@ -80,6 +85,8 @@ public class MeetUpPostService {
 
         return new ApiResponse(true,"수정 완료되었습니다.");
     }
+
+    // 단일 조회
     public ShowMeetUpPost.Response showMeetUpPost(Long meetUpPostId) {
         return ShowMeetUpPost.Response.fromEntity(
                 findMeetUpPostById(meetUpPostId)
@@ -93,15 +100,6 @@ public class MeetUpPostService {
                 });
     }
 
-    // 전체 조회
-    public Page<ShowMeetUpPostList.Response> getAllMeetUpPostPage(Pageable pageable) {
-        Page<MeetUpPost> page = meetUpPostRepository.findAll(pageable);
-        return new PageImpl<ShowMeetUpPostList.Response>(
-                meetUpPostToDto(page.getContent()),
-                pageable,
-                page.getTotalElements()
-        );
-    }
 
     // 필터링 조회 + 전체 조회
     public Page<ShowMeetUpPostList.Response> getMeetUpPostPage(ShowMeetUpPostList.Request request, Pageable pageable) {
@@ -113,6 +111,33 @@ public class MeetUpPostService {
         );
     }
 
+
+    // 사용자 작성 MeetUpPost 조회
+    public Page<ShowMeetUpPostList.Response> getUserMeetUpPost(Long userId, Pageable pageable) {
+        User user = userService.findUserById(userId);
+        Page<MeetUpPost> page = meetUpPostRepository.findAllByUser(user,pageable);
+        return new PageImpl<ShowMeetUpPostList.Response>(
+                meetUpPostToDto(page.getContent()),
+                pageable,
+                page.getTotalElements()
+        );
+    }
+
+    // 사용자가 Poked 한 MeetUpPost 조회
+    public Page<ShowMeetUpPostList.Response> getPokedMeetUpPost(Long userId, Pageable pageable) {
+        User user = userService.findUserById(userId);
+        List<Poke> pokeList = pokeRepository.findAllByUser(user);
+        List<MeetUpPost> pokedPostList = pokeList.stream()
+                .map((poke)-> {
+                    return meetUpPostRepository.findById(poke.getMeetUpPost().getId())
+                            .orElse(null);
+                }).toList();
+        return new PageImpl<ShowMeetUpPostList.Response>(
+                meetUpPostToDto(pokedPostList),
+                pageable,
+                pokedPostList.size()
+        );
+    }
 
     private List<ShowMeetUpPostList.Response> meetUpPostToDto(List<MeetUpPost> meetUpPostList) {
         return meetUpPostList.stream()
@@ -148,5 +173,4 @@ public class MeetUpPostService {
 
         return spec;
     }
-
 }

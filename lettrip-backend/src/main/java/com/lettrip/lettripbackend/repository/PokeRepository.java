@@ -14,6 +14,7 @@ public interface PokeRepository extends JpaRepository<Poke,Long> {
     Optional<Poke> findByUser(User user);
     Optional<Poke> findByUserAndMeetUpPost(User user, MeetUpPost meetUpPost);
     Page<Poke> findAllByUser(User user, Pageable pageable);
+    List<Poke> findAllByUser(User user);
     Page<Poke> findAllByMeetUpPost(MeetUpPost meetUpPost, Pageable pageable);
     List<Poke> findAllByMeetUpPost(MeetUpPost meetUpPost);
 }
