@@ -21,7 +21,7 @@ public enum Province {
     ULSAN("울산광역시", List.of("울산")),
     SEJONG("세종특별자치시", List.of("세종")),
     GYEONGGI("경기도",City.GYEONGGI_CITY),
-    GANGWON("강원도",City.GANGWON_CITY),
+    GANGWON("강원특별자치도",City.GANGWON_CITY),
     CHUNGCHEONGBUKDO("충청북도",City.CHUNGCHEONG_BUKDO_CITY),
     CHUNGCHEONGNAMDO("충청남도",City.CHUNGCHEONG_NAMDO_CITY),
     // 충청남도와 충청북도로 구분
