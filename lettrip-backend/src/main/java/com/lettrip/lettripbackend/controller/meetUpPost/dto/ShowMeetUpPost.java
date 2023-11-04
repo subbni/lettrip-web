@@ -2,6 +2,7 @@ package com.lettrip.lettripbackend.controller.meetUpPost.dto;
 
 import com.lettrip.lettripbackend.constant.Province;
 import com.lettrip.lettripbackend.controller.user.dto.UserDto;
+import com.lettrip.lettripbackend.controller.user.dto.UserProfileDto;
 import com.lettrip.lettripbackend.domain.meetup.MeetUpPost;
 import lombok.*;
 
@@ -16,8 +17,8 @@ public class ShowMeetUpPost {
     @Builder
     public static class Response {
         Long id;
-        UserDto.Response userDto;
-        Boolean isGPSEnabled;
+        UserProfileDto.Response userProfile;
+        Boolean isGpsEnabled;
         LocalDateTime meetUpDate;
         String province;
         String city;
@@ -25,16 +26,15 @@ public class ShowMeetUpPost {
         String content;
         LocalDateTime createdDate;
         Long placeId;
-
         Long travelId;
 
         public static Response fromEntity(MeetUpPost meetUpPost) {
             return Response.builder()
                     .id(meetUpPost.getId())
-                    .userDto(
-                            new UserDto.Response(meetUpPost.getUser())
+                    .userProfile(
+                            new UserProfileDto.Response(meetUpPost.getUser())
                     )
-                    .isGPSEnabled(meetUpPost.isGpsEnabled())
+                    .isGpsEnabled(meetUpPost.isGpsEnabled())
                     .meetUpDate(meetUpPost.getMeetUpDate())
                     .province(meetUpPost.getProvince().getKoreanName())
                     .city(meetUpPost.getCity())
