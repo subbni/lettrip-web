@@ -43,7 +43,7 @@ public class ChatRoomService {
                         .build()
         );
 
-        return ChatRoomDto.Response.fromEntity(chatRoom).setParticipant(participant);
+        return ChatRoomDto.Response.fromEntity(chatRoom).setParticipant(participant).setCurrentUserId(userId);
     }
 
     public void checkProcessBeforeChatRoomCreation(User user, User participant, MeetUpPost meetUpPost) {
@@ -90,7 +90,8 @@ public class ChatRoomService {
     private ChatRoomDto.Response getChatRoomDto(ChatRoom chatRoom, long userId) {
         long participantId = (chatRoom.getWriteUserId() != userId) ? chatRoom.getWriteUserId() : chatRoom.getRequestUserId();
         User participantUser = userService.findUserById(participantId);
-        return ChatRoomDto.Response.fromEntity(chatRoom).setParticipant(participantUser).setCurrentUserId(userId);
+        ChatRoomDto.Response chatRoomDto = ChatRoomDto.Response.fromEntity(chatRoom).setParticipant(participantUser).setCurrentUserId(userId);
+        return chatRoomDto;
 
     }
 

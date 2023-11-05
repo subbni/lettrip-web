@@ -4,6 +4,7 @@ import com.lettrip.lettripbackend.controller.user.dto.UserDto;
 import com.lettrip.lettripbackend.controller.user.dto.UserProfileDto;
 import com.lettrip.lettripbackend.domain.user.User;
 import com.lettrip.lettripbackend.mongo.domain.ChatRoom;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -16,8 +17,11 @@ public class ChatRoomDto {
     @NoArgsConstructor
     @Builder
     public static class Request {
+        @NotNull
         private Long meetUpPostId;
+        @NotNull
         private Long writeUserId;
+        @NotNull
         private Long requestUserId;
     }
 
@@ -49,7 +53,7 @@ public class ChatRoomDto {
             return Response.builder()
                     .roomId(chatRoom.getId())
                     .meetUpPostId(chatRoom.getMeetUpPostId())
-                    .meetUpPostId(chatRoom.getMeetUpId())
+                    .meetUpId(chatRoom.getMeetUpId())
                     .lastMessage(chatRoom.getLastMessage())
                     .lastMessageTime(chatRoom.getLastMessageTime())
                     .build();
