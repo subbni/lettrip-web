@@ -67,6 +67,8 @@ public class MeetUpService {
         // 3. 채팅방 관련 처리
         ChatRoom chatRoom = chatRoomService.findChatRoomById(roomId);
         chatRoom.setMeetUpId(meetUp.getId());
+        chatRoom.setMeetUpStatus(MeetUpStatus.PENDING);
+        chatRoomService.saveChatRoom(chatRoom);
     }
 
     @Transactional
@@ -86,6 +88,10 @@ public class MeetUpService {
         user.addMeetUpCancelledCount();
         User participant = meetUp.getWriteUser().equals(user)? meetUp.getRequestUser(): meetUp.getWriteUser();
         participant.addMeetUpCancelledCount();
+        ChatRoom chatRoom = chatRoomService.findChatRoomByMeetUpId(meetUp.getId());
+        chatRoom.setMeetUpId(meetUp.getId());
+        chatRoom.setMeetUpStatus(MeetUpStatus.CANCELLED);
+        chatRoomService.saveChatRoom(chatRoom);
     }
     @Transactional
     public ApiResponse sendMeetUpCode(Long meetUpId, Long userId) {
@@ -129,6 +135,7 @@ public class MeetUpService {
         MeetUpCode meetUpCode = findMeetUpCodeByMeetUpId(meetUp.getId());
         if(meetUpCode.getCode().equals(request.getCode())) {
             meetUpRepository.save(meetUp.setMeetUpStatus(MeetUpStatus.COMPLETED));
+            processAfterMeetUpCompletion(meetUp,user);
             return new ApiResponse(true,"인증이 완료되었습니다.");
         } else {
             return new ApiResponse(false,"인증에 실패했습니다. 잘못된 인증코드입니다.");
@@ -140,6 +147,10 @@ public class MeetUpService {
         user.addMeetUpCompletedCount();
         User participant = meetUp.getWriteUser().equals(user)? meetUp.getRequestUser(): meetUp.getWriteUser();
         participant.addMeetUpCompletedCount();
+        ChatRoom chatRoom = chatRoomService.findChatRoomByMeetUpId(meetUp.getId());
+        chatRoom.setMeetUpId(meetUp.getId());
+        chatRoom.setMeetUpStatus(MeetUpStatus.COMPLETED);
+        chatRoomService.saveChatRoom(chatRoom);
     }
     public MeetUpDto.Response getMeetUpById(Long meetUpId, Long userId) {
         User user = userService.findUserById(userId);

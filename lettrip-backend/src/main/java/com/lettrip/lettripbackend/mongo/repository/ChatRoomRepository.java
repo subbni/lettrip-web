@@ -12,4 +12,5 @@ import java.util.Optional;
 public interface ChatRoomRepository extends MongoRepository<ChatRoom, String> {
     Page<ChatRoom> findAllByWriteUserIdOrRequestUserId(long writeUserId, long requestUserId, Pageable pageable);
     Optional<ChatRoom> findByWriteUserIdAndRequestUserIdAndMeetUpPostId(long writeUserId, long requestUserId, long MeetUpPostId);
+    Optional<ChatRoom> findByMeetUpId(long meetUpId);
 }
