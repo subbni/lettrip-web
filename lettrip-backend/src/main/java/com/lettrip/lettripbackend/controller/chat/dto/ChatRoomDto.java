@@ -1,8 +1,10 @@
 package com.lettrip.lettripbackend.controller.chat.dto;
 
+import com.lettrip.lettripbackend.constant.MeetUpStatus;
 import com.lettrip.lettripbackend.controller.user.dto.UserDto;
 import com.lettrip.lettripbackend.controller.user.dto.UserProfileDto;
 import com.lettrip.lettripbackend.domain.user.User;
+import com.lettrip.lettripbackend.mongo.domain.Chat;
 import com.lettrip.lettripbackend.mongo.domain.ChatRoom;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -36,6 +38,7 @@ public class ChatRoomDto {
         UserProfileDto.Response participant;
         Long meetUpPostId;
         Long meetUpId;
+        MeetUpStatus meetUpStatus;
         String lastMessage;
         LocalDateTime lastMessageTime;
 
@@ -54,6 +57,7 @@ public class ChatRoomDto {
                     .roomId(chatRoom.getId())
                     .meetUpPostId(chatRoom.getMeetUpPostId())
                     .meetUpId(chatRoom.getMeetUpId())
+                    .meetUpStatus(chatRoom.getMeetUpStatus())
                     .lastMessage(chatRoom.getLastMessage())
                     .lastMessageTime(chatRoom.getLastMessageTime())
                     .build();
