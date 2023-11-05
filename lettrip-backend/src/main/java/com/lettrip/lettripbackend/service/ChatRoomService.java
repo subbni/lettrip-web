@@ -101,4 +101,14 @@ public class ChatRoomService {
         ).orElse(null);
         return chatRoom!=null;
     }
+
+    public void saveChatRoom(ChatRoom chatRoom) {
+        chatRoomRepository.save(chatRoom);
+    }
+
+    public ChatRoom findChatRoomByMeetUpId(Long meetUpId) {
+        return chatRoomRepository.findByMeetUpId(meetUpId).orElseThrow(
+                ()->       new ResourceNotFoundException("ChatRoom","chatRoomId",meetUpId)
+        );
+    }
 }

@@ -57,4 +57,5 @@ public class ChatRoom {
     public void setMeetUpId(Long meetUpId) {
         this.meetUpId = meetUpId;
     }
+    public void setMeetUpStatus(MeetUpStatus meetUpStatus) { this.meetUpStatus = meetUpStatus;}
 }
