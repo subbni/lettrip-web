@@ -28,12 +28,18 @@ public class ChatRoomDto {
     @Builder
     public static class Response {
         String roomId;
+        Long currentUserId;
         UserProfileDto.Response participant;
         String lastMessage;
         LocalDateTime lastMessageTime;
 
         public Response setParticipant(User participant) {
             this.participant = new UserProfileDto.Response(participant);
+            return this;
+        }
+
+        public Response setCurrentUserId(Long currentUserId) {
+            this.currentUserId = currentUserId;
             return this;
         }
 
