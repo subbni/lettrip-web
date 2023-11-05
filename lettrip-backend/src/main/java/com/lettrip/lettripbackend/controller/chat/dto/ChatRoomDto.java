@@ -31,6 +31,7 @@ public class ChatRoomDto {
         Long currentUserId;
         UserProfileDto.Response participant;
         Long meetUpPostId;
+        Long meetUpId;
         String lastMessage;
         LocalDateTime lastMessageTime;
 
@@ -48,6 +49,7 @@ public class ChatRoomDto {
             return Response.builder()
                     .roomId(chatRoom.getId())
                     .meetUpPostId(chatRoom.getMeetUpPostId())
+                    .meetUpPostId(chatRoom.getMeetUpId())
                     .lastMessage(chatRoom.getLastMessage())
                     .lastMessageTime(chatRoom.getLastMessageTime())
                     .build();
