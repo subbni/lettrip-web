@@ -44,7 +44,7 @@ public class MeetUpService {
 
         );
         processAfterMeetUpCreation(meetUp,meetUpPost,request.getRoomId());
-        return new ApiResponse(true, "약속이 생성되었습니다.");
+        return new ApiResponse(true, "약속이 생성되었습니다.", meetUp.getId());
     }
 
     private void checkProcessBeforeMeetUpCreation(MeetUpPost meetUpPost, Long userId) {
@@ -57,7 +57,8 @@ public class MeetUpService {
         }
     }
 
-    private void processAfterMeetUpCreation(MeetUp meetUp, MeetUpPost meetUpPost,String roomId) {
+    @Transactional
+    public void processAfterMeetUpCreation(MeetUp meetUp, MeetUpPost meetUpPost,String roomId) {
         // 1. MeetUpPost 관련 처리
         meetUpPost.setMeetUp(meetUp);
         meetUpPost.setMeetUpPostStatus(MeetUpPostStatus.SCHEDULED);
