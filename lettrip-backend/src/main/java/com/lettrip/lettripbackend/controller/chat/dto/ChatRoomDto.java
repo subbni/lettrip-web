@@ -28,7 +28,9 @@ public class ChatRoomDto {
     @Builder
     public static class Response {
         String roomId;
+        Long currentUserId;
         UserProfileDto.Response participant;
+        Long meetUpPostId;
         String lastMessage;
         LocalDateTime lastMessageTime;
 
@@ -37,9 +39,15 @@ public class ChatRoomDto {
             return this;
         }
 
+        public Response setCurrentUserId(Long currentUserId) {
+            this.currentUserId = currentUserId;
+            return this;
+        }
+
         public static Response fromEntity(ChatRoom chatRoom) {
             return Response.builder()
                     .roomId(chatRoom.getId())
+                    .meetUpPostId(chatRoom.getMeetUpPostId())
                     .lastMessage(chatRoom.getLastMessage())
                     .lastMessageTime(chatRoom.getLastMessageTime())
                     .build();

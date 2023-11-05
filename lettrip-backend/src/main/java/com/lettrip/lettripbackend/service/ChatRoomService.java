@@ -90,7 +90,7 @@ public class ChatRoomService {
     private ChatRoomDto.Response getChatRoomDto(ChatRoom chatRoom, long userId) {
         long participantId = (chatRoom.getWriteUserId() != userId) ? chatRoom.getWriteUserId() : chatRoom.getRequestUserId();
         User participantUser = userService.findUserById(participantId);
-        return ChatRoomDto.Response.fromEntity(chatRoom).setParticipant(participantUser);
+        return ChatRoomDto.Response.fromEntity(chatRoom).setParticipant(participantUser).setCurrentUserId(userId);
 
     }
 
