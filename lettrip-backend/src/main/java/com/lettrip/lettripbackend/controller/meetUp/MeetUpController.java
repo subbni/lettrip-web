@@ -43,7 +43,7 @@ public class MeetUpController {
 
     // 인증 요청
     @PostMapping("/meetUp-verify")
-    public ApiResponse sendCode(
+    public ApiResponse verifyCode(
             @CurrentUser CustomUserDetails customUserDetails,
             @RequestBody VerifyMeetUpCode.Request request
             ) {
