@@ -97,7 +97,7 @@ public class MeetUpService {
     public ApiResponse sendMeetUpCode(Long meetUpId, Long userId) {
         User user = userService.findUserById(userId);
         MeetUp meetUp = findMeetUpById(meetUpId);
-
+        checkProcessBeforeMeetUpCodeCreation(user,meetUp);
         if(hasMeetUpCode(meetUp)) {
             return new ApiResponse(true,"인증코드입니다.", findMeetUpCodeByMeetUpId(meetUp.getId()).getCode());
         } else {
