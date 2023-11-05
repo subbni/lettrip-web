@@ -6,6 +6,7 @@ import com.lettrip.lettripbackend.security.CurrentUser;
 import com.lettrip.lettripbackend.security.CustomUserDetails;
 import com.lettrip.lettripbackend.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -60,5 +61,13 @@ public class UserController {
             @RequestBody UserDto.Request request
     ) {
         return userService.checkIfPasswordCorrect(customUserDetails.getId(), request);
+    }
+
+    @PostMapping("/update/profile")
+    public ApiResponse updateProfile(
+            @CurrentUser CustomUserDetails customUserDetails,
+            @RequestBody UserDto.Request request
+    ) {
+        return userService.updateProfile(customUserDetails.getId(),request);
     }
 }

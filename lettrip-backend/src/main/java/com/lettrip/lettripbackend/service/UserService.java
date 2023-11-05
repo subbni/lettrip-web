@@ -2,6 +2,7 @@ package com.lettrip.lettripbackend.service;
 
 import com.lettrip.lettripbackend.controller.ApiResponse;
 import com.lettrip.lettripbackend.controller.user.dto.UserDto;
+import com.lettrip.lettripbackend.domain.user.Sex;
 import com.lettrip.lettripbackend.domain.user.User;
 import com.lettrip.lettripbackend.exception.LettripErrorCode;
 import com.lettrip.lettripbackend.exception.LettripException;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
@@ -73,5 +75,12 @@ public class UserService {
         }
          return passwordEncoder.matches(targetPassword,realPassword) ? new ApiResponse(true,"비밀번호 일치 확인")
                  :  new ApiResponse(false, "비밀번호 불일치");
+    }
+
+    @Transactional
+    public ApiResponse updateProfile(Long userId, UserDto.Request request) {
+        User user = findUserById(userId);
+        user.updateProfile(Sex.valueOf(request.getSex()),request.getBirthDate());
+        return new ApiResponse(true,"프로필이 변경이 완료되었습니다.");
     }
 }

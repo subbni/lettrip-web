@@ -1,5 +1,6 @@
 package com.lettrip.lettripbackend.controller.user.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.lettrip.lettripbackend.domain.user.Sex;
 import com.lettrip.lettripbackend.domain.user.User;
 import lombok.*;
@@ -15,6 +16,10 @@ public class UserDto {
     @Builder
     public static class Request {
         String nickname;
+        String sex;
+        @JsonFormat(shape = JsonFormat.Shape.STRING,
+                pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
+        LocalDate birthDate;
         String password;
     }
 
