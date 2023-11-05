@@ -2,6 +2,7 @@ package com.lettrip.lettripbackend.controller.meetUp;
 
 import com.lettrip.lettripbackend.controller.ApiResponse;
 import com.lettrip.lettripbackend.controller.meetUp.dto.CreateMeetUp;
+import com.lettrip.lettripbackend.controller.meetUp.dto.MeetUpCodeDto;
 import com.lettrip.lettripbackend.controller.meetUp.dto.MeetUpDto;
 import com.lettrip.lettripbackend.controller.meetUp.dto.VerifyMeetUpCode;
 import com.lettrip.lettripbackend.security.CurrentUser;
@@ -34,7 +35,7 @@ public class MeetUpController {
 
     // 인증코드 요청
     @GetMapping("/meetUp-code/{meetUpId}")
-    public ApiResponse sendCode(
+    public MeetUpCodeDto.Response sendCode(
             @CurrentUser CustomUserDetails customUserDetails,
             @PathVariable Long meetUpId
     ) {

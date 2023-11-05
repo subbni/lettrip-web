@@ -4,6 +4,7 @@ import com.lettrip.lettripbackend.constant.MeetUpPostStatus;
 import com.lettrip.lettripbackend.constant.MeetUpStatus;
 import com.lettrip.lettripbackend.controller.ApiResponse;
 import com.lettrip.lettripbackend.controller.meetUp.dto.CreateMeetUp;
+import com.lettrip.lettripbackend.controller.meetUp.dto.MeetUpCodeDto;
 import com.lettrip.lettripbackend.controller.meetUp.dto.MeetUpDto;
 import com.lettrip.lettripbackend.controller.meetUp.dto.VerifyMeetUpCode;
 import com.lettrip.lettripbackend.domain.meetup.MeetUp;
@@ -30,6 +31,7 @@ public class MeetUpService {
     private final MeetUpRepository meetUpRepository;
     private final MeetUpCodeRepository meetUpCodeRepository;
 
+    /* 약속 생성 */
     @Transactional
     public ApiResponse saveMeetUp(CreateMeetUp.Request request, Long userId) {
         MeetUpPost meetUpPost = meetUpPostService.findMeetUpPostById(request.getMeetUpPostId());
@@ -71,6 +73,7 @@ public class MeetUpService {
         chatRoomService.saveChatRoom(chatRoom);
     }
 
+    /* 약속 취소 */
     @Transactional
     public ApiResponse cancelMeetUp(Long meetUpId, Long userId) {
         User user = userService.findUserById(userId);
@@ -93,15 +96,17 @@ public class MeetUpService {
         chatRoom.setMeetUpStatus(MeetUpStatus.CANCELLED);
         chatRoomService.saveChatRoom(chatRoom);
     }
+
+    /* 약속 인증 코드 전송 */
     @Transactional
-    public ApiResponse sendMeetUpCode(Long meetUpId, Long userId) {
+    public MeetUpCodeDto.Response sendMeetUpCode(Long meetUpId, Long userId) {
         User user = userService.findUserById(userId);
         MeetUp meetUp = findMeetUpById(meetUpId);
         checkProcessBeforeMeetUpCodeCreation(user,meetUp);
         if(hasMeetUpCode(meetUp)) {
-            return new ApiResponse(true,"인증코드입니다.", findMeetUpCodeByMeetUpId(meetUp.getId()).getCode());
+            return new MeetUpCodeDto.Response(findMeetUpCodeByMeetUpId(meetUp.getId()));
         } else {
-            return new ApiResponse(true,"인증코드가 생성되었습니다.",createMeetUpCode(user,meetUp));
+            return new MeetUpCodeDto.Response(createMeetUpCode(user,meetUp));
         }
     }
 
@@ -110,14 +115,14 @@ public class MeetUpService {
             throw new LettripException(LettripErrorCode.UNAUTHORIZED_ACCESS,"당사자만 가능한 작업입니다.");
         }
         if(!meetUp.getMeetUpStatus().equals(MeetUpStatus.PENDING)) {
-            throw new LettripException(LettripErrorCode.CANNOT_BE_CREATED_MULTIPLE_TIMES,"더 이상 약속을 생성할 수 없습니다.");
+            throw new LettripException(LettripErrorCode.CANNOT_BE_CREATED_MULTIPLE_TIMES,"더 이상 약속을 인증할 수 없습니다.");
         }
     }
 
     @Transactional
-    public String createMeetUpCode(User user, MeetUp meetUp) {
+    public MeetUpCode createMeetUpCode(User user, MeetUp meetUp) {
         String code = MailService.createRandomCode(6);
-        MeetUpCode meetUpCode = meetUpCodeRepository.save(
+        return meetUpCodeRepository.save(
                 MeetUpCode.builder()
                         .meetUpId(meetUp.getId())
                         .requesterId(user.getId())
@@ -125,14 +130,15 @@ public class MeetUpService {
                         .code(code)
                         .build()
         );
-        return meetUpCode.getCode();
     }
 
+    /* 약속 인증코드 검증 */
     @Transactional
     public ApiResponse verifyMeetUpCode(VerifyMeetUpCode.Request request, Long userId) {
         User user = userService.findUserById(userId);
         MeetUp meetUp = findMeetUpById(request.getMeetUpId());
         MeetUpCode meetUpCode = findMeetUpCodeByMeetUpId(meetUp.getId());
+        // TODO: requester 와 performer 둘 중 누구인지 확인해서 performer만 인증 가능하도록
         if(meetUpCode.getCode().equals(request.getCode())) {
             meetUpRepository.save(meetUp.setMeetUpStatus(MeetUpStatus.COMPLETED));
             processAfterMeetUpCompletion(meetUp,user);
@@ -152,6 +158,7 @@ public class MeetUpService {
         chatRoom.setMeetUpStatus(MeetUpStatus.COMPLETED);
         chatRoomService.saveChatRoom(chatRoom);
     }
+
     public MeetUpDto.Response getMeetUpById(Long meetUpId, Long userId) {
         User user = userService.findUserById(userId);
         MeetUp meetUp = findMeetUpById(meetUpId);
