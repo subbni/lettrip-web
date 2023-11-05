@@ -44,6 +44,7 @@ public class ChatDto {
                     .senderId(chat.getSendUserId())
                     .receiverId(chat.getReceiveUserId())
                     .createdAt(chat.getCreatedAt())
+                    .isImage(chat.isImage())
                     .build();
         }
     }
