@@ -103,7 +103,7 @@ public class TravelController {
     }
 
     @GetMapping("/my")
-    public Page<ShowTravelList.Response> showUserTravelPage(
+    public Page<ShowTravelList.Response> showMyTravelPage(
             @CurrentUser CustomUserDetails customUserDetails,
             @RequestParam("isVisited") Boolean isVisited,
             Pageable pageable
@@ -111,8 +111,18 @@ public class TravelController {
         return travelService.getUserTravelPlanPage(customUserDetails.getId(), isVisited, pageable);
     }
 
+    /* 다른 유저의 여행 계획, 기록 글 조회 */
+    @GetMapping("/user/{userId}")
+    public Page<ShowTravelList.Response> showUserTravelPage(
+            @PathVariable Long userId,
+            @RequestParam("isVisited") Boolean isVisited,
+            Pageable pageable
+    ) {
+        return travelService.getUserTravelPlanPage(userId, isVisited, pageable);
+    }
+
     @GetMapping("/my/liked")
-    public Page<ShowTravelList.Response> showUserLikedTravelPage(
+    public Page<ShowTravelList.Response> showMyLikedTravelPage(
             @CurrentUser CustomUserDetails customUserDetails,
             Pageable pageable
     ) {

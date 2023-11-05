@@ -25,12 +25,22 @@ public class MeetUpReviewController {
         return meetUpReviewService.saveMeetUpReview(request,customUserDetails.getId());
     }
 
-    // 사용자별 조회
+    @GetMapping("/my")
+    public Page<ShowMeetUpReview.Response> showMyMeetUpReview(
+            @CurrentUser CustomUserDetails customUserDetails,
+            @RequestParam("meetUpStatus") String meetUpStatus,
+            Pageable pageable
+    ) {
+        return meetUpReviewService.getUserMeetUpReviewByMeetUpStatus(customUserDetails.getId(),meetUpStatus,pageable);
+    }
+
+    /* 사용자별 매칭 한줄평 조회 */
     @GetMapping("/user/{userId}")
     public Page<ShowMeetUpReview.Response> showUserMeetUpReview(
             @PathVariable Long userId,
+            @RequestParam("meetUpStatus") String meetUpStatus,
             Pageable pageable
     ) {
-        return meetUpReviewService.getUserMeetUpReview(userId,pageable);
+        return meetUpReviewService.getUserMeetUpReviewByMeetUpStatus(userId,meetUpStatus,pageable);
     }
 }

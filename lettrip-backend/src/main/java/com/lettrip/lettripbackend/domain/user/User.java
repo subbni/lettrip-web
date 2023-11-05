@@ -91,7 +91,7 @@ public class User {
         this.imageUrl = imageUrl;
     }
 
-    public void profileUpdate(Sex sex, LocalDate birthDate) {
+    public void updateProfile(Sex sex, LocalDate birthDate) {
         this.sex = sex;
         this.birthDate = birthDate;
     }
