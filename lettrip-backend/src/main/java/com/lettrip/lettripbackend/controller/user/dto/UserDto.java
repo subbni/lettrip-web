@@ -32,6 +32,9 @@ public class UserDto {
         int point;
         Sex sex;
         LocalDate birthDate;
+        private int meetUpCompletedCount;
+        private int meetUpCancelledCount;
+
         public Response(User user) {
             this.email = user.getEmail();
             this.name = user.getName();
@@ -40,6 +43,8 @@ public class UserDto {
             this.point = user.getPoint();
             this.sex = user.getSex();
             this.birthDate = user.getBirthDate();
+            this.meetUpCancelledCount = user.getMeetUpCancelledCount();
+            this.meetUpCompletedCount = user.getMeetUpCompletedCount();
         }
     }
 }

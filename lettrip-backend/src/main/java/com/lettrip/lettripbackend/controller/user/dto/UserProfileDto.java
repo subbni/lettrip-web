@@ -6,6 +6,9 @@ import lombok.*;
 
 import java.time.LocalDate;
 
+/*
+    유저 페이지가 아닌 프로필 용도로 사용
+ */
 public class UserProfileDto {
     @Getter
     @Setter

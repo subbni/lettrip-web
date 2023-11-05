@@ -16,10 +16,18 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/profile")
-    public UserDto.Response showUserProfile(
+    public UserDto.Response showMyProfile(
             @CurrentUser CustomUserDetails customUserDetails
     ) {
         return userService.getUserProfile(customUserDetails.getId());
+    }
+
+    @GetMapping("/profile/{userId}")
+    public UserDto.Response showUserProfile(
+            @CurrentUser CustomUserDetails customUserDetails,
+            @PathVariable Long userId
+    ) {
+        return userService.getUserProfile(userId);
     }
 
     @PostMapping("/update/image")
