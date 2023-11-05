@@ -1,5 +1,6 @@
 package com.lettrip.lettripbackend.repository;
 
+import com.lettrip.lettripbackend.constant.MeetUpStatus;
 import com.lettrip.lettripbackend.domain.meetup.MeetUp;
 import com.lettrip.lettripbackend.domain.meetup.MeetUpReview;
 import com.lettrip.lettripbackend.domain.user.User;
@@ -11,6 +12,6 @@ import java.util.Optional;
 
 public interface MeetUpReviewRepository extends JpaRepository<MeetUpReview,Long> {
     Optional<MeetUpReview> findByMeetUpAndWriteUser(MeetUp meetUp, User user);
-    Page<MeetUpReview> findAllByObjectUser(User user, Pageable pageable);
+    Page<MeetUpReview> findAllByObjectUserAndMeetUpStatus(User user, MeetUpStatus meetUpStatus, Pageable pageable);
 
 }

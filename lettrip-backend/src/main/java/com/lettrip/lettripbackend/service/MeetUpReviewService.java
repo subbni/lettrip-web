@@ -60,10 +60,12 @@ public class MeetUpReviewService {
         return meetUp.getWriteUser() == currentUser? meetUp.getRequestUser() : meetUp.getWriteUser();
     }
 
-    // 사용자가 받은 MeetUpReview 조회
-    public Page<ShowMeetUpReview.Response> getUserMeetUpReview(Long userId, Pageable pageable) {
+    // 사용자가 받은 meetUpReview 조회 : 필터링 by MeetUpStatus
+    public Page<ShowMeetUpReview.Response> getUserMeetUpReviewByMeetUpStatus(Long userId, String meetUpStatus, Pageable pageable) {
         User user = userService.findUserById(userId);
-        Page<MeetUpReview> page = meetUpReviewRepository.findAllByObjectUser(user,pageable);
+        Page<MeetUpReview> page = meetUpReviewRepository.findAllByObjectUserAndMeetUpStatus(
+                user, MeetUpStatus.valueOf(meetUpStatus), pageable
+        );
         return new PageImpl<>(
                 meetUpReviewToDto(page.getContent()),
                 pageable,
