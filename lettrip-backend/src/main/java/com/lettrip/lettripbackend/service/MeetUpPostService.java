@@ -128,6 +128,17 @@ public class MeetUpPostService {
     public Page<ShowMeetUpPostList.Response> getPokedMeetUpPost(Long userId, Pageable pageable) {
         User user = userService.findUserById(userId);
         List<Poke> pokeList = pokeRepository.findAllByUser(user);
+//        List<MeetUpPost> pokedPostList = pokeList.stream()
+//                .map((poke)-> {
+//                    return meetUpPostRepository.findById(poke.getMeetUpPost().getId())
+//                            .orElse(null);
+//                }).toList();
+        Page<MeetUpPost> page = pokeRepository.findMeetUpPostsByPokeList(pokeList, pageable);
+        return new PageImpl<ShowMeetUpPostList.Response>(
+                meetUpPostToDto(page.getContent()),
+                pageable,
+                page.getTotalElements()
+        );
     }
 
     private List<ShowMeetUpPostList.Response> meetUpPostToDto(List<MeetUpPost> meetUpPostList) {
