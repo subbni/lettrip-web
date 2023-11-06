@@ -53,6 +53,7 @@ public class MeetUpPostService {
                         )
                         .title(request.getTitle())
                         .content(request.getContent())
+                        .isGpsEnabled(request.isGpsEnabled())
                         .place(request.getPlaceId() == null? null : placeService.findById(request.getPlaceId()))
                         .travel(request.getTravelId() == null? null : travelService.findTravelById(request.getTravelId()))
                         .build()
@@ -127,15 +128,16 @@ public class MeetUpPostService {
     public Page<ShowMeetUpPostList.Response> getPokedMeetUpPost(Long userId, Pageable pageable) {
         User user = userService.findUserById(userId);
         List<Poke> pokeList = pokeRepository.findAllByUser(user);
-        List<MeetUpPost> pokedPostList = pokeList.stream()
-                .map((poke)-> {
-                    return meetUpPostRepository.findById(poke.getMeetUpPost().getId())
-                            .orElse(null);
-                }).toList();
+//        List<MeetUpPost> pokedPostList = pokeList.stream()
+//                .map((poke)-> {
+//                    return meetUpPostRepository.findById(poke.getMeetUpPost().getId())
+//                            .orElse(null);
+//                }).toList();
+        Page<MeetUpPost> page = pokeRepository.findMeetUpPostsByPokeList(pokeList, pageable);
         return new PageImpl<ShowMeetUpPostList.Response>(
-                meetUpPostToDto(pokedPostList),
+                meetUpPostToDto(page.getContent()),
                 pageable,
-                pokedPostList.size()
+                page.getTotalElements()
         );
     }
 

@@ -6,6 +6,7 @@ import com.lettrip.lettripbackend.domain.user.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,4 +18,6 @@ public interface PokeRepository extends JpaRepository<Poke,Long> {
     List<Poke> findAllByUser(User user);
     Page<Poke> findAllByMeetUpPost(MeetUpPost meetUpPost, Pageable pageable);
     List<Poke> findAllByMeetUpPost(MeetUpPost meetUpPost);
+    @Query("SELECT p.meetUpPost FROM Poke p WHERE p IN :pokeList")
+    Page<MeetUpPost> findMeetUpPostsByPokeList(List<Poke> pokeList, Pageable pageable);
 }
