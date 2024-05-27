@@ -1,15 +1,12 @@
 package com.lettrip.lettripbackend.mongo.domain;
 
 import com.lettrip.lettripbackend.constant.MeetUpStatus;
-import com.lettrip.lettripbackend.domain.user.User;
-import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -22,13 +19,13 @@ public class ChatRoom {
     @Id
     private String id;
     @Field(name="meet_up_post_id")
-    private long meetUpPostId;
+    private Long meetUpPostId;
     @Field(name="meet_up_id")
-    private long meetUpId;
+    private Long meetUpId;
     @Field(name="write_user_id")
-    private long writeUserId;
+    private Long writeUserId;
     @Field(name="request_user_id")
-    private long requestUserId;
+    private Long requestUserId;
     @Field(name="last_message")
     private String lastMessage;
 
@@ -40,14 +37,14 @@ public class ChatRoom {
 
     @Builder
     public ChatRoom(
-            long meetUpPostId, long meetUpId, long writeUserId,
-            long requestUserId, String lastMessage, MeetUpStatus meetUpStatus
+            Long meetUpPostId, Long meetUpId, Long writeUserId,
+            Long requestUserId, String lastMessage, MeetUpStatus meetUpStatus
     ) {
         this.meetUpPostId = meetUpPostId;
-        this.meetUpId = meetUpId;
         this.writeUserId = writeUserId;
         this.requestUserId = requestUserId;
         this.lastMessage = lastMessage;
+        this.meetUpId = meetUpId;
         this.meetUpStatus = meetUpStatus;
 
     }
@@ -56,4 +53,9 @@ public class ChatRoom {
         this.lastMessage = lastMessage;
         this.lastMessageTime = lastMessageTime;
     }
+
+    public void setMeetUpId(Long meetUpId) {
+        this.meetUpId = meetUpId;
+    }
+    public void setMeetUpStatus(MeetUpStatus meetUpStatus) { this.meetUpStatus = meetUpStatus;}
 }

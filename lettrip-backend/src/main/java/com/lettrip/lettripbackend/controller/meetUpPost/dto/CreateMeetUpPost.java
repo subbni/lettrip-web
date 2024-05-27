@@ -26,7 +26,7 @@ public class CreateMeetUpPost {
 
         @Nullable
         private Long placeId;
-        @Null
+        @Nullable
         private Long travelId;
     }
 

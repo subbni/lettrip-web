@@ -2,6 +2,7 @@ package com.lettrip.lettripbackend.controller.meetUpPost;
 
 import com.lettrip.lettripbackend.controller.ApiResponse;
 import com.lettrip.lettripbackend.controller.meetUpPost.dto.CreateMeetUpPost;
+import com.lettrip.lettripbackend.controller.meetUpPost.dto.ModifyMeetUpPost;
 import com.lettrip.lettripbackend.controller.meetUpPost.dto.ShowMeetUpPost;
 import com.lettrip.lettripbackend.controller.meetUpPost.dto.ShowMeetUpPostList;
 import com.lettrip.lettripbackend.security.CurrentUser;
@@ -26,14 +27,59 @@ public class MeetUpPostController {
         return meetUpPostService.saveMeetUpPost(request, customUserDetails.getId());
     }
 
+    @PutMapping("/modify")
+    public ApiResponse modifyMeetUpPost(
+            @CurrentUser CustomUserDetails customUserDetails,
+            @RequestBody ModifyMeetUpPost.Request request
+    ) {
+        return meetUpPostService.updateMeetUpPost(request,customUserDetails.getId());
+    }
+
     @GetMapping("/{meetUpPostId}")
     public ShowMeetUpPost.Response showMeetUpPost(@PathVariable("meetUpPostId") Long meetUpPostId) {
         return meetUpPostService.showMeetUpPost(meetUpPostId);
     }
 
+    /*
+    전체 조회인 경우
+    province = "all"
+    city = "all"
+    isGpsEnabled, meetUpPostStatus 생략
+    */
     @GetMapping
-    public Page<ShowMeetUpPostList.Response> showMeetUpPostPage(Pageable pageable) {
-        return meetUpPostService.getAllMeetUpPostPage(pageable);
+    public Page<ShowMeetUpPostList.Response> showMeetUpPostPage(
+            @RequestParam("province") String province,
+            @RequestParam("city") String city,
+            @RequestParam(value = "meetUpPostStatus", required = false) String meetUpPostStatus,
+            @RequestParam(value = "isGpsEnabled", required = false) Boolean isGpsEnabled,
+            Pageable pageable
+    ) {
+        return meetUpPostService.getMeetUpPostPage(
+                ShowMeetUpPostList.Request.builder()
+                        .province(province)
+                        .city(city)
+                        .meetUpPostStatus(meetUpPostStatus)
+                        .isGpsEnabled(isGpsEnabled)
+                        .build(),
+                pageable
+        );
     }
 
+    // 사용자 작성 MeetUpPost 조회
+    @GetMapping("/my")
+    public Page<ShowMeetUpPostList.Response> showUserMeetUpPostPage(
+            @CurrentUser CustomUserDetails customUserDetails,
+            Pageable pageable
+    ) {
+        return meetUpPostService.getUserMeetUpPost(customUserDetails.getId(),pageable);
+    }
+
+    // 사용자가 찌른 MeetUpPost 조회
+    @GetMapping("/my/poked")
+    public Page<ShowMeetUpPostList.Response> showUserPokedMeetUpPostPage(
+            @CurrentUser CustomUserDetails customUserDetails,
+            Pageable pageable
+    ) {
+        return meetUpPostService.getPokedMeetUpPost(customUserDetails.getId(),pageable);
+    }
 }

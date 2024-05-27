@@ -2,7 +2,10 @@ package com.lettrip.lettripbackend.service;
 
 import com.lettrip.lettripbackend.controller.chat.dto.ChatDto;
 import com.lettrip.lettripbackend.controller.chat.dto.ChatRoomDto;
+import com.lettrip.lettripbackend.domain.meetup.MeetUpPost;
 import com.lettrip.lettripbackend.domain.user.User;
+import com.lettrip.lettripbackend.exception.LettripErrorCode;
+import com.lettrip.lettripbackend.exception.LettripException;
 import com.lettrip.lettripbackend.exception.ResourceNotFoundException;
 import com.lettrip.lettripbackend.mongo.domain.ChatRoom;
 import com.lettrip.lettripbackend.mongo.repository.ChatRoomRepository;
@@ -22,10 +25,16 @@ import java.util.stream.Collectors;
 @Service
 public class ChatRoomService {
     private final UserService userService;
+    private final MeetUpPostService meetUpPostService;
     private final ChatRoomRepository chatRoomRepository;
 
     @Transactional
-    public ChatRoomDto.Response saveChatRoom(ChatRoomDto.Request request) {
+    public ChatRoomDto.Response saveChatRoom(ChatRoomDto.Request request, Long userId) {
+        User user = userService.findUserById(userId);
+        User participant = userService.findUserById(request.getRequestUserId());
+        MeetUpPost meetUpPost = meetUpPostService.findMeetUpPostById(request.getMeetUpPostId());
+
+        checkProcessBeforeChatRoomCreation(user,participant,meetUpPost);
         ChatRoom chatRoom = chatRoomRepository.save(
                 ChatRoom.builder()
                         .meetUpPostId(request.getMeetUpPostId())
@@ -33,7 +42,19 @@ public class ChatRoomService {
                         .requestUserId(request.getRequestUserId())
                         .build()
         );
-        return ChatRoomDto.Response.fromEntity(chatRoom);
+
+        return ChatRoomDto.Response.fromEntity(chatRoom).setParticipant(participant).setCurrentUserId(userId);
+    }
+
+    public void checkProcessBeforeChatRoomCreation(User user, User participant, MeetUpPost meetUpPost) {
+        // chatRoom 생성 요청은 MeetUpPost 작성자만 가능하다고 가정하며, 이는 반드시 지켜져야 한다.
+        if(!meetUpPost.getUser().equals(user)) {
+            throw new LettripException(LettripErrorCode.UNAUTHORIZED_ACCESS,"채팅방 생성은 매칭글 작성자만 가능한 작업입니다.");
+        }
+        // 같은 MeetUpPost에 대한 두 사람의 채팅방이 존재하는지 확인
+        if(hasChatRoom(user,participant,meetUpPost)) {
+            throw new LettripException(LettripErrorCode.CANNOT_BE_CREATED_MULTIPLE_TIMES,"이미 해당 매칭글에 대한 채팅방이 존재합니다.");
+        }
     }
 
     @Transactional
@@ -69,10 +90,25 @@ public class ChatRoomService {
     private ChatRoomDto.Response getChatRoomDto(ChatRoom chatRoom, long userId) {
         long participantId = (chatRoom.getWriteUserId() != userId) ? chatRoom.getWriteUserId() : chatRoom.getRequestUserId();
         User participantUser = userService.findUserById(participantId);
-        return ChatRoomDto.Response.fromEntity(chatRoom).setParticipant(participantUser);
+        ChatRoomDto.Response chatRoomDto = ChatRoomDto.Response.fromEntity(chatRoom).setParticipant(participantUser).setCurrentUserId(userId);
+        return chatRoomDto;
 
     }
 
+    private Boolean hasChatRoom(User user, User participant, MeetUpPost meetUpPost) {
+        ChatRoom chatRoom = chatRoomRepository.findByWriteUserIdAndRequestUserIdAndMeetUpPostId(
+                user.getId(), participant.getId(), meetUpPost.getId()
+        ).orElse(null);
+        return chatRoom!=null;
+    }
 
+    public void saveChatRoom(ChatRoom chatRoom) {
+        chatRoomRepository.save(chatRoom);
+    }
 
+    public ChatRoom findChatRoomByMeetUpId(Long meetUpId) {
+        return chatRoomRepository.findByMeetUpId(meetUpId).orElseThrow(
+                ()->       new ResourceNotFoundException("ChatRoom","chatRoomId",meetUpId)
+        );
+    }
 }

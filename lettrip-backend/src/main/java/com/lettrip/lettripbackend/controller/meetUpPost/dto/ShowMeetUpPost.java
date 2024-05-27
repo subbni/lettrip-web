@@ -2,10 +2,12 @@ package com.lettrip.lettripbackend.controller.meetUpPost.dto;
 
 import com.lettrip.lettripbackend.constant.Province;
 import com.lettrip.lettripbackend.controller.user.dto.UserDto;
+import com.lettrip.lettripbackend.controller.user.dto.UserProfileDto;
 import com.lettrip.lettripbackend.domain.meetup.MeetUpPost;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 public class ShowMeetUpPost {
     @Getter
@@ -15,33 +17,32 @@ public class ShowMeetUpPost {
     @Builder
     public static class Response {
         Long id;
-        UserDto.Response userDto;
-        Boolean isGPSEnabled;
+        UserProfileDto.Response userProfile;
+        Boolean isGpsEnabled;
         LocalDateTime meetUpDate;
-        Province province;
+        String province;
         String city;
         String title;
         String content;
         LocalDateTime createdDate;
         Long placeId;
-
         Long travelId;
 
         public static Response fromEntity(MeetUpPost meetUpPost) {
             return Response.builder()
                     .id(meetUpPost.getId())
-                    .userDto(
-                            new UserDto.Response(meetUpPost.getUser())
+                    .userProfile(
+                            new UserProfileDto.Response(meetUpPost.getUser())
                     )
-                    .isGPSEnabled(meetUpPost.isGPSEnabled())
+                    .isGpsEnabled(meetUpPost.isGpsEnabled())
                     .meetUpDate(meetUpPost.getMeetUpDate())
-                    .province(meetUpPost.getProvince())
+                    .province(meetUpPost.getProvince().getKoreanName())
                     .city(meetUpPost.getCity())
                     .title(meetUpPost.getTitle())
                     .content(meetUpPost.getContent())
                     .createdDate(meetUpPost.getCreatedDate())
-                    .placeId(meetUpPost.getId())
-                    .travelId(meetUpPost.getId())
+                    .placeId(meetUpPost.getPlace()==null? null:meetUpPost.getPlace().getId())
+                    .travelId(meetUpPost.getTravel()==null? null:meetUpPost.getTravel().getId())
                     .build();
         }
     }

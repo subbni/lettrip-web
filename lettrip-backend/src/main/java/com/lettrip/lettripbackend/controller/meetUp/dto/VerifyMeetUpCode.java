@@ -1,14 +1,15 @@
-package com.lettrip.lettripbackend.controller.meetUpPost.dto;
+package com.lettrip.lettripbackend.controller.meetUp.dto;
 
 import lombok.*;
 
-public class CreateMeetUp {
+public class VerifyMeetUpCode {
     @Getter
     @Setter
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
     public static class Request {
-        private String nothing;
+        String code;
+        Long meetUpId;
     }
 }

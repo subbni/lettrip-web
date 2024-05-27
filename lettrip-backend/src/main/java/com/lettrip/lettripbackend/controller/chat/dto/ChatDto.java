@@ -1,6 +1,7 @@
 package com.lettrip.lettripbackend.controller.chat.dto;
 
 import com.lettrip.lettripbackend.mongo.domain.Chat;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -13,10 +14,15 @@ public class ChatDto {
     @NoArgsConstructor
     @Builder
     public static class Request {
+        @NotNull
         private String roomId;
+        @NotNull
         private Long senderId;
+        @NotNull
         private Long receiverId;
+        @NotNull
         private String message;
+        @NotNull
         private Boolean isImage;
     }
 
@@ -38,6 +44,7 @@ public class ChatDto {
                     .senderId(chat.getSendUserId())
                     .receiverId(chat.getReceiveUserId())
                     .createdAt(chat.getCreatedAt())
+                    .isImage(chat.isImage())
                     .build();
         }
     }

@@ -1,5 +1,6 @@
 package com.lettrip.lettripbackend.controller.user.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.lettrip.lettripbackend.domain.user.Sex;
 import com.lettrip.lettripbackend.domain.user.User;
 import lombok.*;
@@ -15,6 +16,10 @@ public class UserDto {
     @Builder
     public static class Request {
         String nickname;
+        String sex;
+        @JsonFormat(shape = JsonFormat.Shape.STRING,
+                pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
+        LocalDate birthDate;
         String password;
     }
 
@@ -32,6 +37,9 @@ public class UserDto {
         int point;
         Sex sex;
         LocalDate birthDate;
+        private int meetUpCompletedCount;
+        private int meetUpCancelledCount;
+
         public Response(User user) {
             this.email = user.getEmail();
             this.name = user.getName();
@@ -40,6 +48,8 @@ public class UserDto {
             this.point = user.getPoint();
             this.sex = user.getSex();
             this.birthDate = user.getBirthDate();
+            this.meetUpCancelledCount = user.getMeetUpCancelledCount();
+            this.meetUpCompletedCount = user.getMeetUpCompletedCount();
         }
     }
 }

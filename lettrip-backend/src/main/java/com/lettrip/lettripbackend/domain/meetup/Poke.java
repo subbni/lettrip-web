@@ -24,7 +24,7 @@ public class Poke {
     private long id;
 
     @ManyToOne
-    @JoinColumn(name="MEEP_UP_POST_ID")
+    @JoinColumn(name="MEET_UP_POST_ID")
     private MeetUpPost meetUpPost;
 
     @ManyToOne
@@ -42,5 +42,10 @@ public class Poke {
         this.user = user;
         this.briefMessage = briefMessage;
         this.pokeStatus = PokeStatus.NOT_YET;
+    }
+
+    public Poke setPokeStatus(PokeStatus pokeStatus) {
+        this.pokeStatus = pokeStatus;
+        return this;
     }
 }

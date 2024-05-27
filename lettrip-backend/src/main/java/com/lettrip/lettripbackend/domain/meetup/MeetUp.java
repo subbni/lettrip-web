@@ -38,7 +38,6 @@ public class MeetUp {
     @JoinColumn(name="REQUEST_USER_ID")
     private User requestUser;
     private LocalDate meetUpDate;
-
     @Enumerated(EnumType.STRING)
     private MeetUpStatus meetUpStatus;
 
@@ -51,4 +50,8 @@ public class MeetUp {
         this.meetUpStatus = MeetUpStatus.PENDING;
     }
 
+    public MeetUp setMeetUpStatus(MeetUpStatus meetUpStatus) {
+        this.meetUpStatus = meetUpStatus;
+        return this;
+    }
 }

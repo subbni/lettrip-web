@@ -31,7 +31,6 @@ public class TravelService {
     private final UserService userService;
     private final CourseService courseService;
     private final LikedService likedService;
-
     private final FileService fileService;
 
     @Transactional
@@ -65,9 +64,11 @@ public class TravelService {
         return new ApiResponse(true, "여행 코스가 저장되었습니다.",travel.getId());
     }
 
+    @Transactional
     public ApiResponse deleteTravel(Long travelId, Long userId) {
         Travel travel = findTravelById(travelId);
         checkIfWriter(travel,userId);
+        likedService.deleteLiked(userId, LikedType.TRAVEL_LIKE, travelId);
         travelRepository.delete(travel);
         return new ApiResponse(true,"여행 코스가 삭제되었습니다.",travel.getId());
     }

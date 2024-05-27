@@ -2,7 +2,6 @@ package com.lettrip.lettripbackend.domain.meetup;
 
 import com.lettrip.lettripbackend.constant.MeetUpPostStatus;
 import com.lettrip.lettripbackend.constant.Province;
-import com.lettrip.lettripbackend.constant.MeetUpStatus;
 import com.lettrip.lettripbackend.constant.converter.ProvincePersistConverter;
 import com.lettrip.lettripbackend.domain.BaseTimeEntity;
 import com.lettrip.lettripbackend.domain.travel.Place;
@@ -33,7 +32,7 @@ public class MeetUpPost extends BaseTimeEntity {
     private MeetUp meetUp;
 
     @Column(name="is_gps_enabled")
-    private boolean isGPSEnabled;
+    private boolean isGpsEnabled;
     private LocalDateTime meetUpDate;
 
     @Convert(converter = ProvincePersistConverter.class)
@@ -57,20 +56,49 @@ public class MeetUpPost extends BaseTimeEntity {
     private MeetUpPostStatus meetUpPostStatus;
     @Builder
     public MeetUpPost(User user,
-                      boolean isGPSEnabled,
+                      boolean isGpsEnabled,
                       LocalDateTime meetUpDate,
                       Province province,
                       String city,
                       String title,
-                      String content
+                      String content,
+                      Place place,
+                      Travel travel
                       ) {
         this.user = user;
-        this.isGPSEnabled = isGPSEnabled;
+        this.isGpsEnabled = isGpsEnabled;
         this.meetUpDate = meetUpDate;
         this.province = province;
         this.city = city;
         this.title = title;
         this.content = content;
+        this.place = place;
+        this.travel = travel;
         this.meetUpPostStatus = MeetUpPostStatus.UNSCHEDULED;
+    }
+
+    public MeetUpPost update(boolean isGpsEnabled,
+                  LocalDateTime meetUpDate,
+                  String title,
+                  String content,
+                  Place place,
+                  Travel travel) {
+        this.isGpsEnabled = isGpsEnabled;
+        this.meetUpDate = meetUpDate;
+        this.title = title;
+        this.content = content;
+        this.place = place;
+        this.travel = travel;
+        return this;
+    }
+
+    public MeetUpPost setMeetUp(MeetUp meetUp) {
+        this.meetUp = meetUp;
+        return this;
+    }
+
+    public MeetUpPost setMeetUpPostStatus(MeetUpPostStatus meetUpPostStatus) {
+        this.meetUpPostStatus = meetUpPostStatus;
+        return this;
     }
 }

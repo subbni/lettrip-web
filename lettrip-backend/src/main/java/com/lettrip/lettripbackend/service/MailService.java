@@ -73,7 +73,7 @@ public class MailService {
         redisUtil.deleteData(code);
     }
 
-    public String createRandomCode(int length) {
+    public static String createRandomCode(int length) {
         return UUID.randomUUID().toString().substring(0,length);
     }
 }

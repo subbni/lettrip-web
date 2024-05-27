@@ -15,7 +15,9 @@ public enum LettripErrorCode {
     INTERNAL_SERVER_ERROR("서버에 오류가 발생했습니다."),
     INVALID_REQUEST("잘못된 요청입니다."),
     INVALID_CITY_NAME("행정구역 내에 존재하지 않는 지역명입니다."),
-    RESOURCE_NOT_FOUND("존재하지 않는 자원에 대한 요청입니다.");
+    RESOURCE_NOT_FOUND("존재하지 않는 자원에 대한 요청입니다."),
+    CANNOT_BE_CREATED_MULTIPLE_TIMES("중복 생성 불가능한 데이터입니다."),
+    UNAUTHORIZED_ACCESS("권한이 없는 작업입니다.");
 
     private final String message;
 }

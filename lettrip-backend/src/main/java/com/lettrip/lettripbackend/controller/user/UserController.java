@@ -6,6 +6,7 @@ import com.lettrip.lettripbackend.security.CurrentUser;
 import com.lettrip.lettripbackend.security.CustomUserDetails;
 import com.lettrip.lettripbackend.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,10 +17,18 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/profile")
-    public UserDto.Response showUserProfile(
+    public UserDto.Response showMyProfile(
             @CurrentUser CustomUserDetails customUserDetails
     ) {
         return userService.getUserProfile(customUserDetails.getId());
+    }
+
+    @GetMapping("/profile/{userId}")
+    public UserDto.Response showUserProfile(
+            @CurrentUser CustomUserDetails customUserDetails,
+            @PathVariable Long userId
+    ) {
+        return userService.getUserProfile(userId);
     }
 
     @PostMapping("/update/image")
@@ -52,5 +61,13 @@ public class UserController {
             @RequestBody UserDto.Request request
     ) {
         return userService.checkIfPasswordCorrect(customUserDetails.getId(), request);
+    }
+
+    @PostMapping("/update/profile")
+    public ApiResponse updateProfile(
+            @CurrentUser CustomUserDetails customUserDetails,
+            @RequestBody UserDto.Request request
+    ) {
+        return userService.updateProfile(customUserDetails.getId(),request);
     }
 }
