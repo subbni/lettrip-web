@@ -40,16 +40,10 @@ public class MeetUpPostController {
         return meetUpPostService.showMeetUpPost(meetUpPostId);
     }
 
-    /*
-    전체 조회인 경우
-    province = "all"
-    city = "all"
-    isGpsEnabled, meetUpPostStatus 생략
-    */
     @GetMapping
     public Page<ShowMeetUpPostList.Response> showMeetUpPostPage(
-            @RequestParam("province") String province,
-            @RequestParam("city") String city,
+            @RequestParam(value="province" ,required = false) String province,
+            @RequestParam(value="city", required = false) String city,
             @RequestParam(value = "meetUpPostStatus", required = false) String meetUpPostStatus,
             @RequestParam(value = "isGpsEnabled", required = false) Boolean isGpsEnabled,
             Pageable pageable
