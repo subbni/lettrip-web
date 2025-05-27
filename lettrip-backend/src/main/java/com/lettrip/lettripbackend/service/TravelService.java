@@ -5,18 +5,18 @@ import com.lettrip.lettripbackend.constant.TravelTheme;
 import com.lettrip.lettripbackend.controller.ApiResponse;
 import com.lettrip.lettripbackend.controller.travel.dto.ShowTravelList;
 import com.lettrip.lettripbackend.controller.travel.dto.TravelDto;
-import com.lettrip.lettripbackend.domain.liked.Liked;
 import com.lettrip.lettripbackend.constant.LikedType;
+import com.lettrip.lettripbackend.domain.travel.QTravel;
 import com.lettrip.lettripbackend.domain.travel.Travel;
 import com.lettrip.lettripbackend.domain.user.User;
 import com.lettrip.lettripbackend.exception.ResourceNotFoundException;
-import com.lettrip.lettripbackend.repository.TravelRepository;
-import com.lettrip.lettripbackend.repository.specification.TravelSpecification;
+import com.lettrip.lettripbackend.repository.liked.LikedRepository;
+import com.lettrip.lettripbackend.repository.travel.TravelRepository;
+import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 @Service
 public class TravelService {
     private final TravelRepository travelRepository;
+    private final LikedRepository likedRepository;
     private final UserService userService;
     private final CourseService courseService;
     private final LikedService likedService;
@@ -102,7 +103,7 @@ public class TravelService {
 
     // 여행 부분 조회
     public Page<ShowTravelList.Response> showTravelPage(ShowTravelList.Request request, Pageable pageable) {
-        Page<Travel> page = travelRepository.findAll(getTravelPageSpec(request),pageable);
+        Page<Travel> page = travelRepository.findAllByDynamicCondition(buildCondition(request),pageable);
         return new PageImpl<ShowTravelList.Response>(
                 travelToListDto(page.getContent()),
                 pageable,
@@ -110,27 +111,17 @@ public class TravelService {
         );
     }
 
-    // 좋아요 누른 여행 조회
     public Page<ShowTravelList.Response> getLikedTravels(Long userId, Pageable pageable) {
         User user = userService.findUserById(userId);
-        List<Liked> likedList = likedService.findUserLikedList(user, LikedType.TRAVEL_LIKE);
-        List<Travel> likedTravelList = likedList.stream()
-                .map((liked)-> {
-                    return travelRepository.findById(liked.getTargetId()).
-                            orElse(null);
-                })
-                .toList();
-        return new PageImpl<ShowTravelList.Response>(
-                travelToListDto(likedTravelList),
-                pageable,
-                likedTravelList.size()
-        );
+        Page<Travel> travelPage = likedRepository.findUserLikedTravel(user, pageable);
+        return travelPage.map((ShowTravelList.Response::fromEntity));
     }
 
     // 사용자 작성 여행 조회
     public Page<ShowTravelList.Response> getUserTravelPlanPage(Long userId, Boolean isVisited, Pageable pageable) {
         User user = userService.findUserById(userId);
-        Page<Travel> page =  travelRepository.findAll(TravelSpecification.getTravelEqualUserAndIsVisited(user,isVisited),pageable);
+
+        Page<Travel> page =  travelRepository.findAllByUserAndIsVisited(user, isVisited, pageable);
         return new PageImpl<>(
                 travelToListDto(page.getContent()),
                 pageable,
@@ -138,45 +129,28 @@ public class TravelService {
         );
     }
 
-    private Specification<Travel> getTravelPageSpec(ShowTravelList.Request request) {
+    private BooleanBuilder buildCondition(ShowTravelList.Request request) {
+        QTravel qTravel = QTravel.travel;
+        BooleanBuilder condition = new BooleanBuilder();
 
-        Specification<Travel> spec
-                = Specification.where(TravelSpecification.equalIsVisited(true));
-
-        if(!request.getProvince().equals("all")) {
-            spec = spec .and(TravelSpecification.equalProvince((Province.of(request.getProvince()))));
+        if (request.getProvince() != null) {
+            condition.and(qTravel.province.eq(Province.of(request.getProvince())));
+        }
+        if (request.getCity() != null) {
+            condition.and(qTravel.city.eq(request.getCity()));
+        }
+        if (request.getTravelTheme() != null) {
+            condition.and(qTravel.travelTheme.eq(TravelTheme.of(request.getTravelTheme())));
+        }
+        if (request.getMinCost() != null && request.getMaxCost() != null) {
+            condition.and(qTravel.totalCost.between(request.getMinCost(), request.getMaxCost()));
+        }
+        if (request.getMinNumberOfCourses() != null && request.getMaxNumberOfCourses() != null) {
+            condition.and(qTravel.numberOfCourses.between(request.getMinNumberOfCourses(), request.getMaxNumberOfCourses()));
         }
 
-        if(!request.getCity().equals("all")) {
-            spec = spec.and(TravelSpecification.equalCity(request.getCity()));
-        }
-        if(!request.getTravelTheme().equals("all")) {
-            spec = spec.and(TravelSpecification.equalTravelTheme(TravelTheme.of(request.getTravelTheme())));
-        }
-
-        if(request.getMinCost()>0 || request.getMaxCost()>0) {
-            if(request.getMinCost() <0) {
-                spec = spec.and(TravelSpecification.betweenTotalCost(0,request.getMaxCost()));
-            } else if(request.getMaxCost() <0) {
-                spec = spec.and(TravelSpecification.betweenTotalCost(request.getMinCost(),Long.MAX_VALUE));
-            } else {
-                spec = spec.and(TravelSpecification.betweenTotalCost(request.getMinCost(), request.getMaxCost()));
-            }
-        }
-
-        if(request.getMinNumberOfCourses()>0|| request.getMaxNumberOfCourses()>0) {
-            if(request.getMinNumberOfCourses() <0) {
-                spec = spec.and(TravelSpecification.betweenNumberOfCourses(0,request.getMaxNumberOfCourses()));
-            } else if(request.getMaxNumberOfCourses() <0) {
-                spec = spec.and(TravelSpecification.betweenNumberOfCourses(request.getMinNumberOfCourses(),Integer.MAX_VALUE));
-            } else {
-                spec = spec.and(TravelSpecification.betweenNumberOfCourses(request.getMinNumberOfCourses(), request.getMaxNumberOfCourses()));
-            }
-        }
-        return spec;
+        return condition;
     }
-
-
 
     private List<ShowTravelList.Response> travelToListDto(List<Travel> travelList) {
         return travelList.stream()

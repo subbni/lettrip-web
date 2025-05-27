@@ -5,7 +5,7 @@ import com.lettrip.lettripbackend.controller.travel.dto.ReviewDto;
 import com.lettrip.lettripbackend.domain.travel.Place;
 import com.lettrip.lettripbackend.domain.travel.Review;
 import com.lettrip.lettripbackend.domain.user.User;
-import com.lettrip.lettripbackend.repository.ReviewRepository;
+import com.lettrip.lettripbackend.repository.review.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;

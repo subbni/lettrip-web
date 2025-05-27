@@ -7,20 +7,18 @@ import com.lettrip.lettripbackend.controller.meetUpPost.dto.CreateMeetUpPost;
 import com.lettrip.lettripbackend.controller.meetUpPost.dto.ModifyMeetUpPost;
 import com.lettrip.lettripbackend.controller.meetUpPost.dto.ShowMeetUpPost;
 import com.lettrip.lettripbackend.controller.meetUpPost.dto.ShowMeetUpPostList;
-import com.lettrip.lettripbackend.domain.meetup.MeetUp;
 import com.lettrip.lettripbackend.domain.meetup.MeetUpPost;
 import com.lettrip.lettripbackend.domain.meetup.Poke;
+import com.lettrip.lettripbackend.domain.meetup.QMeetUpPost;
 import com.lettrip.lettripbackend.domain.user.User;
 import com.lettrip.lettripbackend.exception.ResourceNotFoundException;
-import com.lettrip.lettripbackend.repository.MeetUpPostRepository;
 import com.lettrip.lettripbackend.repository.PokeRepository;
-import com.lettrip.lettripbackend.repository.specification.MeetUpPostSpecification;
-import com.lettrip.lettripbackend.repository.specification.TravelSpecification;
+import com.lettrip.lettripbackend.repository.meetUpPost.MeetUpPostRepository;
+import com.querydsl.core.BooleanBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -104,7 +102,7 @@ public class MeetUpPostService {
 
     // 필터링 조회 + 전체 조회
     public Page<ShowMeetUpPostList.Response> getMeetUpPostPage(ShowMeetUpPostList.Request request, Pageable pageable) {
-        Page<MeetUpPost> page = meetUpPostRepository.findAll(getMeetUpPostPageSpec(request), pageable);
+        Page<MeetUpPost> page = meetUpPostRepository.findAll(buildCondition(request), pageable);
         return new PageImpl<ShowMeetUpPostList.Response>(
                 meetUpPostToDto(page.getContent()),
                 pageable,
@@ -153,26 +151,21 @@ public class MeetUpPostService {
         }
     }
 
-    private Specification<MeetUpPost> getMeetUpPostPageSpec(ShowMeetUpPostList.Request request) {
-        Specification<MeetUpPost> spec = null;
-
+    private BooleanBuilder buildCondition(ShowMeetUpPostList.Request request) {
+        QMeetUpPost qMeetUpPost = QMeetUpPost.meetUpPost;
+        BooleanBuilder condition = new BooleanBuilder();
         if(request.getIsGpsEnabled()!=null) {
-            spec = Specification.where(MeetUpPostSpecification.equalIsGpsEnabled(request.getIsGpsEnabled()));
-        } else {
-            spec = Specification.where(MeetUpPostSpecification.getAll());
+            condition.and(qMeetUpPost.isGpsEnabled.eq(request.getIsGpsEnabled()));
         }
         if(request.getMeetUpPostStatus()!=null) {
-            spec = Specification.where(
-                    MeetUpPostSpecification.equalMeetUpPostStatus(MeetUpPostStatus.valueOf(request.getMeetUpPostStatus()))
-            );
+            condition.and(qMeetUpPost.meetUpPostStatus.eq(MeetUpPostStatus.valueOf(request.getMeetUpPostStatus())));
         }
-        if(!request.getProvince().equals("all")) {
-            spec = spec.and(MeetUpPostSpecification.equalProvince((Province.of(request.getProvince()))));
+        if(request.getProvince()!=null) {
+            condition.and(qMeetUpPost.province.eq(Province.of(request.getProvince())));
+            if(request.getCity()!=null) {
+                condition.and(qMeetUpPost.city.eq(Province.getCityInProvince(Province.of(request.getProvince()),request.getCity())));;
+            }
         }
-        if(!request.getCity().equals("all")) {
-            spec = spec.and(MeetUpPostSpecification.equalCity(request.getCity()));
-        }
-
-        return spec;
+        return condition;
     }
 }

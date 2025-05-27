@@ -12,6 +12,7 @@ import com.lettrip.lettripbackend.domain.liked.Liked;
 import com.lettrip.lettripbackend.domain.user.User;
 import com.lettrip.lettripbackend.exception.ResourceNotFoundException;
 import com.lettrip.lettripbackend.repository.ArticleRepository;
+import com.lettrip.lettripbackend.repository.liked.LikedRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 public class ArticleService {
     private final UserService userService;
     private final LikedService likedService;
+    private final LikedRepository likedRepository;
     private final ArticleRepository articleRepository;
 
     @Transactional
@@ -96,17 +98,8 @@ public class ArticleService {
     // 좋아요 누른 게시글 조회
     public Page<ShowArticleList.Response> getLikedPlaces(Long userId, Pageable pageable) {
         User user = userService.findUserById(userId);
-        List<Liked> likedList = likedService.findUserLikedList(user, LikedType.ARTICLE_LIKE);
-        List<Article> likedArticleList = likedList.stream()
-                .map((liked)-> {
-                    return articleRepository.findById(liked.getTargetId())
-                            .orElse(null);
-                }).toList();
-        return new PageImpl<>(
-                articleToDto(likedArticleList),
-                pageable,
-                likedArticleList.size()
-        );
+        Page<Article> articlePage = likedRepository.findUserLikedArticle(user, pageable);
+        return articlePage.map(ShowArticleList.Response::fromEntity);
     }
 
     private List<ShowArticleList.Response> articleToDto(List<Article> articleList) {

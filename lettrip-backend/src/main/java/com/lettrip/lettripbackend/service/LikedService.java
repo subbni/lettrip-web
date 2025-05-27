@@ -8,13 +8,10 @@ import com.lettrip.lettripbackend.constant.LikedType;
 import com.lettrip.lettripbackend.domain.user.User;
 import com.lettrip.lettripbackend.exception.ResourceNotFoundException;
 import com.lettrip.lettripbackend.repository.ArticleRepository;
-import com.lettrip.lettripbackend.repository.LikedRepository;
-import com.lettrip.lettripbackend.repository.specification.LikedSpecification;
+import com.lettrip.lettripbackend.repository.liked.LikedRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -92,12 +89,6 @@ public class LikedService {
         }else {
             return true;
         }
-    }
-
-    public List<Liked> findUserLikedList(User user, LikedType likedType) {
-        return likedRepository.findAll(
-                LikedSpecification.getUserLiked(user, likedType)
-        );
     }
 
     public void deleteLiked(Long userId, LikedType likedType, Long targetId) {

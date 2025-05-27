@@ -13,6 +13,7 @@ import com.lettrip.lettripbackend.exception.LettripErrorCode;
 import com.lettrip.lettripbackend.exception.LettripException;
 import com.lettrip.lettripbackend.exception.ResourceNotFoundException;
 import com.lettrip.lettripbackend.repository.PlaceRepository;
+import com.lettrip.lettripbackend.repository.liked.LikedRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Point;
@@ -32,8 +33,8 @@ import java.util.stream.Collectors;
 @Service
 public class PlaceService {
     private final PlaceRepository placeRepository;
+    private final LikedRepository likedRepository;
     private final UserService userService;
-    private final LikedService likedService;
     @Transactional
     public Place savePlace(PlaceDto.Request placeDto) {
         try {
@@ -96,17 +97,8 @@ public class PlaceService {
     // 좋아요 누른 장소 조회
     public Page<PlaceDto.Response> getLikedPlaces(Long userId, Pageable pageable) {
         User user = userService.findUserById(userId);
-        List<Liked> likedList = likedService.findUserLikedList(user, LikedType.PLACE_LIKE);
-        List<Place> likedPlaceList = likedList.stream()
-                .map((liked)-> {
-                    return placeRepository.findById(liked.getTargetId())
-                            .orElse(null);                })
-                .toList();
-        return new PageImpl<PlaceDto.Response>(
-                placeToListDto(likedPlaceList),
-                pageable,
-                likedPlaceList.size()
-        );
+        Page<Place> placePage = likedRepository.findUserLikedPlace(user,pageable);
+        return placePage.map(PlaceDto.Response::fromEntity);
     }
 
     public Place findById(Long placeId) {
