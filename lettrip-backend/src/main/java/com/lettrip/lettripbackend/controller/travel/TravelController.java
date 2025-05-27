@@ -79,8 +79,8 @@ public class TravelController {
 
     @GetMapping
     public Page<ShowTravelList.Response> showTravelPage(
-        @RequestParam("province") String province,
-        @RequestParam("city") String city,
+        @RequestParam(value="province", required = false) String province,
+        @RequestParam(value="city", required = false) String city,
         @RequestParam(value = "minCost", required = false) long minCost,
         @RequestParam(value="maxCost",required = false) long maxCost,
         @RequestParam(value="minNumberOfCourses", required = false) int minNumberOfCourses,
