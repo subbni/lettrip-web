@@ -61,8 +61,8 @@ public class LettripExceptionHandler {
     public LettripErrorResponse handleException(
             Exception e, HttpServletRequest request /* 그 외 모든 Exception 처리 */
     ) {
-        log.error("url: {}, message: {}, cause: {}",
-                request.getRequestURI(), e.getMessage(),e.getCause());
+        log.error("url: {}, message: {}, cause: {}, trace: {}",
+                request.getRequestURI(), e.getMessage(),e.getCause(), e.getStackTrace());
         return LettripErrorResponse.builder().success(false)
                 .errorCode(LettripErrorCode.INTERNAL_SERVER_ERROR)
                 .message((LettripErrorCode.INTERNAL_SERVER_ERROR.getMessage()))
