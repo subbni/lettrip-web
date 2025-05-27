@@ -8,6 +8,10 @@ group = 'com.lettrip'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
 
+springBoot {
+	mainClass = 'com.lettrip.lettripbackend.LettripBackendApplication'
+}
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
@@ -30,6 +34,7 @@ dependencies {
  	implementation group: 'com.mysql', name: 'mysql-connector-j', version: '8.0.33'
 	implementation group: 'org.hibernate', name: 'hibernate-spatial', version: '6.1.7.Final'
 	implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
+	implementation 'org.springframework.boot:spring-boot-starter-aop'
 	// 채팅 관련
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 	// mongoDB
@@ -37,7 +42,7 @@ dependencies {
 
 	// Querydsl 추가
 	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
-	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
+	annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'
 	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
 	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 	// -- QueryDSL ---
@@ -53,6 +58,7 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+	testImplementation 'org.mockito:mockito-core:3.12.4'
 	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 }
 
@@ -60,9 +66,16 @@ test {
 	useJUnitPlatform()
 }
 
-// Querydsl 설정부
+def generated = "$buildDir/generated/querydsl"
 
-// clean task 실행 시 QClass 삭제
+sourceSets {
+	main.java.srcDirs += [generated]
+}
+
+tasks.withType(JavaCompile) {
+	options.annotationProcessorGeneratedSourcesDirectory = file(generated)
+}
+
 clean {
-	delete file('src/main/generated')
+	delete file('build/generated/querydsl')
 }
